@@ -1,0 +1,18 @@
+{application, cowboy_enhancer,
+ [{description, "The Cowboy Enhancer Framework"},
+  {vsn, "0.1.0"},
+  {registered, [cowboy_enhancer_sup]},
+  {mod, { cowboy_enhancer_app, []}},
+  {applications,
+   [kernel,
+    stdlib,
+	lager,
+    cowboy
+   ]},
+  {env,[]},
+  {modules, []},
+
+  {maintainers, []},
+  {licenses, []},
+  {links, []}
+ ]}.

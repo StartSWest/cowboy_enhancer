@@ -1,2 +1,9 @@
-# cowboy_enhancer
-A small and powerfull framework around Cowboy Erlang Webserver.
+cowboy_enhancer
+=====
+
+An OTP application
+
+Build
+-----
+
+    $ rebar3 compile
