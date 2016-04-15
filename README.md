@@ -86,7 +86,7 @@ add the `cowvoy_enhancer' to the applications that need to be started
 		  sasl,
 		  cowboy_enhancer]},
 		  
-remove sasl unless you realy need it.
+remove sasl unless you really need it.
 
 {relx, [{release, { myapp, "0.1.0" },
          [myapp,
