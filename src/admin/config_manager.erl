@@ -16,6 +16,9 @@
     database_manager_config/0,
     session_manager_config/0,
     target_app/0,
+	template_srcdir/0,
+	template_outdir/0,
+	depdir/0
     system_start_verbose_level/0,
     change_session_manager_config/1]).
 
@@ -126,6 +129,15 @@ system_start_verbose_level() ->
 %% -------------------------------------------------------------------
 target_app() ->
     application:get_env(?ROOT_CONFIG_NAME, target_app).
+
+template_outdir() ->
+    application:get_env(?ROOT_CONFIG_NAME, template_outdir).
+	
+template_srcdir() ->
+    application:get_env(?ROOT_CONFIG_NAME, template_srcdir).
+	
+depdir() ->
+    application:get_env(?ROOT_CONFIG_NAME, depdir).
 
 change_session_manager_config(Config) when is_tuple(Config) ->
     change_session_manager_config([Config]);

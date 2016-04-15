@@ -20,7 +20,7 @@ start_dev() ->
 
 start_verbose(VerboseTime) ->
     %% prepares code paths.
-    prepare_code(VerboseTime),
+    %%prepare_code(VerboseTime),
 
     verbose_log(1, "~nStarting 'cowboy_enhancer' framework...~n"),
     %% starts the framework.
@@ -88,7 +88,7 @@ prepare_code(VerboseTime) ->
     code:add_path(AppDir ++ "/ebin"),
     verbose_log(2, "done.~n"),
 
-    verbose_log(2, "~nEntering directory /deps...~n"),
+    verbose_log(2, "~nEntering to deps directory...~n"),
     DepsDir = filename:join(AppDir, "deps"),
     verbose_log(2, "  => ~p~n", [DepsDir]),
 
@@ -139,8 +139,10 @@ unprepare_code() ->
 compile_templates(VerboseTime) ->
     verbose_log(1, "~nCompiling templates...~n"),
     {ok, CWD} = file:get_cwd(),
-    OutDir = filename:join(CWD, "ebin"),
-    TemplatesDir = filename:join(CWD, "src/view/templates/"),
+	%% output directory for compiled templates.
+    OutDir = filename:join(CWD, config_manager:template_outdir()),
+	%% source code directory for templates.
+    TemplatesDir = filename:join(CWD, config_manager:template_srcdir()),
     filelib:fold_files(TemplatesDir, ".html", true, fun(File, _Acc) ->
         timer:sleep(VerboseTime),
         TN = filename:basename(filename:rootname(File)) ++ "_dtl",
