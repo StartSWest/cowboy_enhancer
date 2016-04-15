@@ -95,3 +95,10 @@ remove sasl unless you really need it.
 to start the system in development mode with your application included:
 
 <pre>rebar3 shell</pre>
+
+Documentation
+----
+see /doc
+
+A proper documentation shall come soon.
+

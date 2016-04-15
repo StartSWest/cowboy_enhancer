@@ -1,0 +1,125 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module debug_logger</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module debug_logger</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>.
+<p>Copyright © (C) 2015, Ivanco Software Corporation</p>
+
+<p><b>Authors:</b> Ivan Carmenates Garcia.</p>
+
+<h2><a name="description">Description</a></h2>
+  
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#log_error-1">log_error/1</a></td><td>
+  Logs an error and stack trace.</td></tr>
+<tr><td valign="top"><a href="#log_error-2">log_error/2</a></td><td>
+  Logs an error and stack trace.</td></tr>
+<tr><td valign="top"><a href="#log_error-2">log_error/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#log_error_msg-1">log_error_msg/1</a></td><td>
+  Logs an error message without stack trace.</td></tr>
+<tr><td valign="top"><a href="#log_error_msg-2">log_error_msg/2</a></td><td>
+  Logs an error message without stack trace.</td></tr>
+<tr><td valign="top"><a href="#log_error_msg-2">log_error_msg/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#log_info_msg-1">log_info_msg/1</a></td><td>
+  Logs a info message.</td></tr>
+<tr><td valign="top"><a href="#log_info_msg-2">log_info_msg/2</a></td><td>
+  Logs a info message.</td></tr>
+<tr><td valign="top"><a href="#log_warning_msg-1">log_warning_msg/1</a></td><td>
+  Logs a warning message.</td></tr>
+<tr><td valign="top"><a href="#log_warning_msg-2">log_warning_msg/2</a></td><td>
+  Logs a warning message.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="log_error-1">log_error/1</a></h3>
+<div class="spec">
+<p><tt>log_error(Params) -&gt; ok | {error, Reason}</tt>
+<ul class="definitions"><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
+</div><p>
+  Logs an error and stack trace.
+  NOTE: 'Params' is the same as io:format("~p", [Params]).</p>
+
+<h3 class="function"><a name="log_error-2">log_error/2</a></h3>
+<div class="spec">
+<p><tt>log_error(ErrorFormat, Params) -&gt; ok | {error, Reason}</tt>
+<ul class="definitions"><li><tt>ErrorFormat = string()</tt></li><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
+</div><p>
+  Logs an error and stack trace.
+  NOTE: 'ErrorFormat' and 'Params' is the same as:
+        io:format(ErrorFormat, [Params]).</p>
+
+<h3 class="function"><a name="log_error-2">log_error/2</a></h3>
+<div class="spec">
+<p><tt>log_error(ErrorFormat, Params) -&gt; any()</tt></p>
+</div>
+
+<h3 class="function"><a name="log_error_msg-1">log_error_msg/1</a></h3>
+<div class="spec">
+<p><tt>log_error_msg(Params) -&gt; ok | {error, Reason}</tt>
+<ul class="definitions"><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
+</div><p>
+  Logs an error message without stack trace.
+  NOTE: 'Params' is the same as io:format("~p", [Params]).</p>
+
+<h3 class="function"><a name="log_error_msg-2">log_error_msg/2</a></h3>
+<div class="spec">
+<p><tt>log_error_msg(ErrorFormat, Params) -&gt; ok | {error, Reason}</tt>
+<ul class="definitions"><li><tt>ErrorFormat = string()</tt></li><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
+</div><p>
+  Logs an error message without stack trace.
+  NOTE: 'ErrorFormat' and 'Params' is the same as:
+        io:format(ErrorFormat, [Params]).</p>
+
+<h3 class="function"><a name="log_error_msg-2">log_error_msg/2</a></h3>
+<div class="spec">
+<p><tt>log_error_msg(ErrorFormat, Params) -&gt; any()</tt></p>
+</div>
+
+<h3 class="function"><a name="log_info_msg-1">log_info_msg/1</a></h3>
+<div class="spec">
+<p><tt>log_info_msg(Params) -&gt; ok | {error, Reason}</tt>
+<ul class="definitions"><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
+</div><p>
+  Logs a info message.
+  NOTE: 'Params' is the same as io:format("~p", [Params]).</p>
+
+<h3 class="function"><a name="log_info_msg-2">log_info_msg/2</a></h3>
+<div class="spec">
+<p><tt>log_info_msg(MessageFormat, Params) -&gt; ok | {error, Reason}</tt>
+<ul class="definitions"><li><tt>MessageFormat = string()</tt></li><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
+</div><p>
+  Logs a info message.
+  NOTE: 'MessageFormat' and 'Params' is the same as:
+        io:format(MessageFormat, [Params]).</p>
+
+<h3 class="function"><a name="log_warning_msg-1">log_warning_msg/1</a></h3>
+<div class="spec">
+<p><tt>log_warning_msg(Params) -&gt; ok | {error, Reason}</tt>
+<ul class="definitions"><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
+</div><p>
+  Logs a warning message.
+  NOTE: 'Params' is the same as io:format("~p", [Params]).</p>
+
+<h3 class="function"><a name="log_warning_msg-2">log_warning_msg/2</a></h3>
+<div class="spec">
+<p><tt>log_warning_msg(WarningFormat, Params) -&gt; ok | {error, Reason}</tt>
+<ul class="definitions"><li><tt>WarningFormat = string()</tt></li><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
+</div><p>
+  Logs a warning message.
+  NOTE: 'WarningFormat' and 'Params' is the same as:
+        io:format(WarningFormat, [Params]).</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc, Apr 15 2016, 16:38:28.</i></p>
+</body>
+</html>

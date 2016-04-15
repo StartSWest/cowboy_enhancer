@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module postgres_backend</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module postgres_backend</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#types">Data Types</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+   This is the postgres database backend module.
+<p>Copyright © (C) 2015, Ivanco Software Corporation</p>
+
+<p><b>Authors:</b> Ivan Carmenates Garcia.</p>
+
+<h2><a name="description">Description</a></h2>
+   This is the postgres database backend module.
+<h2><a name="types">Data Types</a></h2>
+
+<h3 class="typedecl"><a name="type-params">params()</a></h3>
+<p><tt>params() = [] | [any(), ...]</tt></p>
+
+
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#connect-5">connect/5</a></td><td></td></tr>
+<tr><td valign="top"><a href="#delete-4">delete/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#disconnect-1">disconnect/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#find-4">find/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#insert-3">insert/3</a></td><td></td></tr>
+<tr><td valign="top"><a href="#query-4">query/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#query-4">query/4</a></td><td></td></tr>
+<tr><td valign="top"><a href="#transaction-2">transaction/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#update-4">update/4</a></td><td></td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="connect-5">connect/5</a></h3>
+<div class="spec">
+<p><tt>connect(Server, Username, Password, Database, Timeout) -&gt; {ok, ConRef} | {error, closed} | {error, Other}</tt>
+<ul class="definitions"><li><tt>Server = string()</tt></li><li><tt>Username = string()</tt></li><li><tt>Password = string()</tt></li><li><tt>Database = string()</tt></li><li><tt>Timeout = timeout()</tt></li><li><tt>ConRef = <a href="epgsql.html#type-connection">epgsql:connection()</a></tt></li><li><tt>Other = term()</tt></li></ul></p>
+</div>
+<p><b>See also:</b> <a href="database_manager.html#connect-2">database_manager:connect/2</a>.</p>
+
+<h3 class="function"><a name="delete-4">delete/4</a></h3>
+<div class="spec">
+<p><tt>delete(ConRef, TableName, MatchFieldSpecs, Options) -&gt; {ok, Count} | {ok, Count, <a href="database_manager.html#type-result_data">database_manager:result_data()</a>} | {error, {invalid_result_format, term()}} | {error, Other}</tt>
+<ul class="definitions"><li><tt>ConRef = <a href="epgsql.html#type-connection">epgsql:connection()</a></tt></li><li><tt>TableName = atom()</tt></li><li><tt>MatchFieldSpecs = <a href="database_manager.html#type-match_field_specs">database_manager:match_field_specs()</a></tt></li><li><tt>Options = <a href="proplists.html#type-proplist">proplists:proplist()</a></tt></li><li><tt>Other = term()</tt></li></ul></p>
+</div>
+<p><b>See also:</b> <a href="database_manager.html#delete-4">database_manager:delete/4</a>.</p>
+
+<h3 class="function"><a name="disconnect-1">disconnect/1</a></h3>
+<div class="spec">
+<p><tt>disconnect(ConRef) -&gt; ok</tt>
+<ul class="definitions"><li><tt>ConRef = <a href="epgsql.html#type-connection">epgsql:connection()</a></tt></li></ul></p>
+</div>
+<p><b>See also:</b> <a href="database_manager.html#disconnect-1">database_manager:disconnect/1</a>.</p>
+
+<h3 class="function"><a name="find-4">find/4</a></h3>
+<div class="spec">
+<p><tt>find(ConRef, TableNames, MatchFieldSpecs, Options) -&gt; {ok, <a href="database_manager.html#type-result_data">database_manager:result_data()</a>} | {error, {invalid_clause_option, term()}} | {error, {invalid_result_format, term()}} | {error, Other}</tt>
+<ul class="definitions"><li><tt>ConRef = <a href="epgsql.html#type-connection">epgsql:connection()</a></tt></li><li><tt>TableNames = atom() | [atom(), ...]</tt></li><li><tt>MatchFieldSpecs = <a href="database_manager.html#type-condition_term">database_manager:condition_term()</a> | <a href="database_manager.html#type-match_field_specs">database_manager:match_field_specs()</a></tt></li><li><tt>Options = <a href="proplists.html#type-proplist">proplists:proplist()</a></tt></li><li><tt>Other = term()</tt></li></ul></p>
+</div>
+<p><b>See also:</b> <a href="database_manager.html#find-4">database_manager:find/4</a>.</p>
+
+<h3 class="function"><a name="insert-3">insert/3</a></h3>
+<div class="spec">
+<p><tt>insert(ConRef, TableSpec, Options) -&gt; {ok, Count} | {ok, Count, <a href="database_manager.html#type-result_data_for_insert">database_manager:result_data_for_insert()</a>} | {error, {invalid_result_format, term()}} | {error, Other}</tt>
+<ul class="definitions"><li><tt>ConRef = <a href="epgsql.html#type-connection">epgsql:connection()</a></tt></li><li><tt>TableSpec = <a href="database_manager.html#type-table_spec">database_manager:table_spec()</a></tt></li><li><tt>Options = <a href="proplists.html#type-proplist">proplists:proplist()</a></tt></li><li><tt>Other = term()</tt></li></ul></p>
+</div>
+<p><b>See also:</b> <a href="database_manager.html#insert-3">database_manager:insert/3</a>.</p>
+
+<h3 class="function"><a name="query-4">query/4</a></h3>
+<div class="spec">
+<p><tt>query(ConRef, Query, Params, Options) -&gt; {ok, <a href="database_manager.html#type-result_data">database_manager:result_data()</a>} | {ok, Count} | {ok, Count, <a href="database_manager.html#type-result_data">database_manager:result_data()</a>} | {error, {invalid_result_format, term()}} | {error, Other}</tt>
+<ul class="definitions"><li><tt>ConRef = <a href="epgsql.html#type-connection">epgsql:connection()</a></tt></li><li><tt>Query = string() | bitstring()</tt></li><li><tt>Params = [] | [any(), ...]</tt></li><li><tt>Options = <a href="proplists.html#type-proplist">proplists:proplist()</a></tt></li><li><tt>Other = term()</tt></li></ul></p>
+</div>
+<p><b>See also:</b> <a href="database_manager.html#query-4">database_manager:query/4</a>.</p>
+
+<h3 class="function"><a name="query-4">query/4</a></h3>
+<div class="spec">
+<p><tt>query(ConRef, Query, Params, Options) -&gt; any()</tt></p>
+</div>
+
+<h3 class="function"><a name="transaction-2">transaction/2</a></h3>
+<div class="spec">
+<p><tt>transaction(ConRef, Fun) -&gt; Reply | {error, Reason}</tt>
+<ul class="definitions"><li><tt>ConRef = <a href="epgsql.html#type-connection">epgsql:connection()</a></tt></li><li><tt>Fun = function()</tt></li><li><tt>Reply = any()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
+</div>
+<p><b>See also:</b> <a href="database_manager.html#transaction-2">database_manager:transaction/2</a>.</p>
+
+<h3 class="function"><a name="update-4">update/4</a></h3>
+<div class="spec">
+<p><tt>update(ConRef, TableSpec, MatchFieldSpecs, Options) -&gt; {ok, Count} | {ok, Count, <a href="database_manager.html#type-result_data">database_manager:result_data()</a>} | {error, {invalid_result_format, term()}} | {error, Other}</tt>
+<ul class="definitions"><li><tt>ConRef = <a href="epgsql.html#type-connection">epgsql:connection()</a></tt></li><li><tt>TableSpec = <a href="database_manager.html#type-table_spec">database_manager:table_spec()</a></tt></li><li><tt>MatchFieldSpecs = <a href="database_manager.html#type-match_field_specs">database_manager:match_field_specs()</a></tt></li><li><tt>Options = <a href="proplists.html#type-proplist">proplists:proplist()</a></tt></li><li><tt>Other = term()</tt></li></ul></p>
+</div>
+<p><b>See also:</b> <a href="database_manager.html#update-4">database_manager:update/4</a>.</p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc, Apr 15 2016, 16:38:28.</i></p>
+</body>
+</html>

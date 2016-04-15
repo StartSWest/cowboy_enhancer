@@ -1,0 +1,158 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Module config_manager</title>
+<link rel="stylesheet" type="text/css" href="stylesheet.css" title="EDoc">
+</head>
+<body bgcolor="white">
+<div class="navbar"><a name="#navbar_top"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<hr>
+
+<h1>Module config_manager</h1>
+<ul class="index"><li><a href="#description">Description</a></li><li><a href="#index">Function Index</a></li><li><a href="#functions">Function Details</a></li></ul>
+   Config manager to retrieve application set of configurations.
+<p>Copyright © (C) 2016, Ivanco Software Corporation</p>
+
+<p><b>Authors:</b> Ivan Carmenates Garcia.</p>
+
+<h2><a name="description">Description</a></h2>
+   Config manager to retrieve application set of configurations.
+<h2><a name="index">Function Index</a></h2>
+<table width="100%" border="1" cellspacing="0" cellpadding="2" summary="function index"><tr><td valign="top"><a href="#change_session_manager_config-1">change_session_manager_config/1</a></td><td></td></tr>
+<tr><td valign="top"><a href="#database_manager_config-0">database_manager_config/0</a></td><td>
+  Retrieves the related config for <code>database_manager</code> module.</td></tr>
+<tr><td valign="top"><a href="#get_target_app_ebin_and_src-0">get_target_app_ebin_and_src/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#get_templates_dir-0">get_templates_dir/0</a></td><td></td></tr>
+<tr><td valign="top"><a href="#session_manager_config-0">session_manager_config/0</a></td><td>
+  Retrieves the related config for <code>session_manager</code> module.</td></tr>
+<tr><td valign="top"><a href="#system_start_verbose_level-0">system_start_verbose_level/0</a></td><td>  
+Retrieves the initial level of detail of the debug information for  
+the current system.</td></tr>
+<tr><td valign="top"><a href="#target_app-0">target_app/0</a></td><td>  
+Retrieves the name of the target application configured for the  
+Cowboy Enhancer framework.</td></tr>
+</table>
+
+<h2><a name="functions">Function Details</a></h2>
+
+<h3 class="function"><a name="change_session_manager_config-1">change_session_manager_config/1</a></h3>
+<div class="spec">
+<p><tt>change_session_manager_config(Config) -&gt; any()</tt></p>
+</div>
+
+<h3 class="function"><a name="database_manager_config-0">database_manager_config/0</a></h3>
+<div class="spec">
+<p><tt>database_manager_config() -&gt; any()</tt></p>
+</div><p><p>
+  Retrieves the related config for <code>database_manager</code> module.</p>
+ 
+  This section is configured by setting the code bellow in
+  <code>app.config</code> file under <code>cowboy_enhancer</code> tag:
+  <pre>
+    {cowboy_enhancer, [
+        ...
+        %% Database backends configuration.
+        {database_manager, [
+            {main_backend, [
+                {backend, postgres_backend},
+                {server, "localhost"},
+                {username, "postgres"},
+                {password, "server"},
+                {database, "my_app_db"},
+                %% max amount of database connections in the
+                %% connection pool.
+                {max_reusable_connections, 10}, % 10 connections.
+                %% max time to wait for an available connection.
+                {wait_for_reusable_connection_timeout, 10000} % 10 seconds.
+            ]}
+        ]},
+        ...
+    ]}
+  </pre>
+  Note:<ul>
+  <li>
+   You can configure multiple database backends. Like <code>main_backend</code>
+   in the example above you can create other tags for other database
+   backends and use them in an indistinct manner.</li></ul>
+ 
+  See <code>database_manager</code> module for more information about how to use
+  backends.</p>
+
+<h3 class="function"><a name="get_target_app_ebin_and_src-0">get_target_app_ebin_and_src/0</a></h3>
+<div class="spec">
+<p><tt>get_target_app_ebin_and_src() -&gt; any()</tt></p>
+</div>
+
+<h3 class="function"><a name="get_templates_dir-0">get_templates_dir/0</a></h3>
+<div class="spec">
+<p><tt>get_templates_dir() -&gt; any()</tt></p>
+</div>
+
+<h3 class="function"><a name="session_manager_config-0">session_manager_config/0</a></h3>
+<div class="spec">
+<p><tt>session_manager_config() -&gt; any()</tt></p>
+</div><p><p>
+  Retrieves the related config for <code>session_manager</code> module.</p>
+ 
+  This section is configured by setting the code bellow in
+  <code>app.config</code> file under <code>cowboy_enhancer</code> tag:
+  <pre>
+    {cowboy_enhancer, [
+        ...
+        %% Configuration for session manager module.
+        {session_manager, [
+            %% this is the default time in which sessions will expire.
+            {session_expire_time, 360000}, % 1 hour.
+ 
+            %% this is the default frequency in which expired sessions will be
+            %% recollected and deleted.
+            {garbage_collector_frequency, 360000}, % 1 hour.
+        ]}
+        ...
+    ]}
+  </pre></p>
+
+<h3 class="function"><a name="system_start_verbose_level-0">system_start_verbose_level/0</a></h3>
+<div class="spec">
+<p><tt>system_start_verbose_level() -&gt; any()</tt></p>
+</div><p><p>  
+Retrieves the initial level of detail of the debug information for  
+the current system.</p>
+ 
+  This section is configured by setting the code bellow in
+  <code>app.config</code> file under <code>cowboy_enhancer</code> tag:
+  <pre>
+    {cowboy_enhancer, [
+        ...
+        %% shows more info in the console when system starts,
+        %% more bigger the number is more detailed info is shown.
+        %% 0 -&gt; no info, 3 -&gt; maximum details.
+        {system_start_verbose_level, 2},
+        ...
+    ]}
+  </pre></p>
+
+<h3 class="function"><a name="target_app-0">target_app/0</a></h3>
+<div class="spec">
+<p><tt>target_app() -&gt; any()</tt></p>
+</div><p><p>  
+Retrieves the name of the target application configured for the  
+Cowboy Enhancer framework.</p>
+ 
+  This section is configured by setting the code bellow in
+  <code>app.config</code> file under <code>cowboy_enhancer</code> tag:
+  <pre>
+    {cowboy_enhancer, [
+        ...
+        %% This is the main application name.
+        {target_app, my_app},
+        ...
+    ]}
+  </pre></p>
+<hr>
+
+<div class="navbar"><a name="#navbar_bottom"></a><table width="100%" border="0" cellspacing="0" cellpadding="2" summary="navigation bar"><tr><td><a href="overview-summary.html" target="overviewFrame">Overview</a></td><td><a href="http://www.erlang.org/"><img src="erlang.png" align="right" border="0" alt="erlang logo"></a></td></tr></table></div>
+<p><i>Generated by EDoc, Apr 15 2016, 16:38:28.</i></p>
+</body>
+</html>

@@ -1,0 +1,8 @@
+%% encoding: UTF-8
+{application,cowboy_enhancer}.
+{modules,[ce_control,config_manager,connection_pool,connection_pool_sup,
+          cowboy_enhancer_app,cowboy_enhancer_sup,database_manager,
+          datetime_lib,db_mgr_tests,debug_handler,debug_hooks,debug_logger,
+          debug_message,email_manager,model,model_manager,postgres_backend,
+          request_manager,require_auth,router_handler,security_lib,
+          session_manager,sql_builder_tools]}.
