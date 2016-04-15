@@ -18,7 +18,7 @@
     target_app/0,
 	template_srcdir/0,
 	template_outdir/0,
-	depdir/0
+	depdir/0,
     system_start_verbose_level/0,
     change_session_manager_config/1]).
 
