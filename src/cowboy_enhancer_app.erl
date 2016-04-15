@@ -140,9 +140,11 @@ compile_templates(VerboseTime) ->
     verbose_log(1, "~nCompiling templates...~n"),
     {ok, CWD} = file:get_cwd(),
 	%% output directory for compiled templates.
-    OutDir = filename:join(CWD, config_manager:template_outdir()),
+	{ok, TemplateOutdir} = config_manager:template_outdir(),
+    OutDir = filename:join(CWD, TemplateOutdir),
 	%% source code directory for templates.
-    TemplatesDir = filename:join(CWD, config_manager:template_srcdir()),
+	{ok, TemplateSrcdir} = config_manager:template_srcdir(),
+    TemplatesDir = filename:join(CWD, TemplateSrcdir),
     filelib:fold_files(TemplatesDir, ".html", true, fun(File, _Acc) ->
         timer:sleep(VerboseTime),
         TN = filename:basename(filename:rootname(File)) ++ "_dtl",
