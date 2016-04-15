@@ -79,6 +79,8 @@ Then put the cowvoy_enhancer dependency in rebar.config file located in myapp fo
     {cowboy_enhancer, {git, "git://github.com/StartSWest/cowboy_enhancer.git", {branch, master}}}]}.
 </pre>
 
+Disable sasl unless you realy need it.
+
 to start the system in development mode with your application included:
 
 <pre>rebar3 shell</pre>
