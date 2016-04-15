@@ -72,14 +72,25 @@ in the config/sys.config file put this:
 
 Configure it at will.
 
-Then put the cowvoy_enhancer dependency in rebar.config file located in myapp folder,
+Then put the `cowvoy_enhancer' dependency in rebar.config file located in myapp folder,
 
 <pre>
 {deps, [
     {cowboy_enhancer, {git, "git://github.com/StartSWest/cowboy_enhancer.git", {branch, master}}}]}.
 </pre>
 
-Disable sasl unless you realy need it.
+add the `cowvoy_enhancer' to the applications that need to be started
+
+{relx, [{release, { myapp, "0.1.0" },
+         [myapp,
+		  sasl,
+		  cowboy_enhancer]},
+		  
+remove sasl unless you realy need it.
+
+{relx, [{release, { myapp, "0.1.0" },
+         [myapp,
+		  cowboy_enhancer]},
 
 to start the system in development mode with your application included:
 

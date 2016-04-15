@@ -153,7 +153,6 @@ compile_templates(VerboseTime) ->
 	%% source code directory for templates.
 	{ok, RelTemplateDir} = config_manager:get_templates_dir(),
     TemplatesDir = filename:join([Source ++ "/" ++ RelTemplateDir]),
-	io:format("~n **** Template Dir: ~p~n", [TemplatesDir]),
 	filelib:fold_files(TemplatesDir, ".html", true, fun(File, _Acc) ->
         timer:sleep(VerboseTime),
         TN = filename:basename(filename:rootname(File)) ++ "_dtl",
