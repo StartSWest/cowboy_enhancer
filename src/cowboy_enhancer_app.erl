@@ -15,6 +15,7 @@ start() ->
     start_verbose(100).
 
 start_dev() ->
+	
     start_verbose(0),
     observer:start().
 
@@ -138,14 +139,13 @@ unprepare_code() ->
 
 compile_templates(VerboseTime) ->
     verbose_log(1, "~nCompiling templates...~n"),
-    {ok, CWD} = file:get_cwd(),
 	%% output directory for compiled templates.
-	{ok, TemplateOutdir} = config_manager:template_outdir(),
-    OutDir = filename:join(CWD, TemplateOutdir),
+	{ok, OutDir, Source} = config_manager:get_target_app_ebin_and_src(),
 	%% source code directory for templates.
-	{ok, TemplateSrcdir} = config_manager:template_srcdir(),
-    TemplatesDir = filename:join(CWD, TemplateSrcdir),
-    filelib:fold_files(TemplatesDir, ".html", true, fun(File, _Acc) ->
+	{ok, RelTemplateDir} = config_manager:get_templates_dir(),
+    TemplatesDir = filename:join([Source ++ "/" ++ RelTemplateDir]),
+	io:format("~n **** Template Dir: ~p~n", [TemplatesDir]),
+	filelib:fold_files(TemplatesDir, ".html", true, fun(File, _Acc) ->
         timer:sleep(VerboseTime),
         TN = filename:basename(filename:rootname(File)) ++ "_dtl",
         verbose_log(3, "  => ~p => ~p...", [filename:basename(File), TN]),
@@ -167,9 +167,8 @@ compile_templates(VerboseTime) ->
 
 load_controllers(VerboseTime) ->
     verbose_log(1, "~nLoading modules...~n"),
-    {ok, CWD} = file:get_cwd(),
-    EbinDir = filename:join(CWD, "ebin/"),
-    filelib:fold_files(EbinDir, ".beam", true, fun(File, _Acc) ->
+	{ok, OutDir, Source} = config_manager:get_target_app_ebin_and_src(),
+    filelib:fold_files(OutDir, ".beam", true, fun(File, _Acc) ->
         timer:sleep(VerboseTime),
         FN = list_to_atom(filename:basename(filename:rootname(File))),
         verbose_log(3, "  => ~p...", [FN]),

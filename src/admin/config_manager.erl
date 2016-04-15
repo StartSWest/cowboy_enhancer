@@ -16,10 +16,9 @@
     database_manager_config/0,
     session_manager_config/0,
     target_app/0,
-	template_srcdir/0,
-	template_outdir/0,
-	depdir/0,
-    system_start_verbose_level/0,
+	get_templates_dir/0,
+	get_target_app_ebin_and_src/0,
+	system_start_verbose_level/0,
     change_session_manager_config/1]).
 
 %% -------------------------------------------------------------------
@@ -130,14 +129,33 @@ system_start_verbose_level() ->
 target_app() ->
     application:get_env(?ROOT_CONFIG_NAME, target_app).
 
-template_outdir() ->
-    application:get_env(?ROOT_CONFIG_NAME, template_outdir).
-	
-template_srcdir() ->
-    application:get_env(?ROOT_CONFIG_NAME, template_srcdir).
-	
-depdir() ->
-    application:get_env(?ROOT_CONFIG_NAME, depdir).
+get_templates_dir() ->	
+	application:get_env(?ROOT_CONFIG_NAME, templates_dir).
+
+get_target_app_ebin_and_src() ->
+	{ok, TargetApp} = target_app(),
+	R = case (catch (TargetApp:module_info())) of
+			{'EXIT', _} ->
+				App = list_to_atom(atom_to_list(TargetApp) ++ "_app"),
+				case (catch (App:module_info())) of
+					{'EXIT', _} ->
+						{error, could_no_resolve_app_path};
+					ModuleInfo2 ->
+						{ok, ModuleInfo2}
+				end;
+			ModuleInfo3 when is_list(ModuleInfo3) ->
+				{ok, ModuleInfo3}
+		end,
+	case R of
+		{ok, ModuleInfo} ->
+			CompileInfo = proplists:get_value(compile, ModuleInfo, []),
+			Source = filename:dirname(proplists:get_value(source, CompileInfo, "")),
+			Options = proplists:get_value(options, CompileInfo, []),
+			OutDir = proplists:get_value(outdir, Options, []),
+			{ok, OutDir, Source};
+		Other ->
+			Other
+	end.
 
 change_session_manager_config(Config) when is_tuple(Config) ->
     change_session_manager_config([Config]);
