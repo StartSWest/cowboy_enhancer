@@ -10,7 +10,7 @@ Build
 
 Easy to setup
 ----
-Just just create an application with rebar3
+Just create an application with rebar3
 
 <pre>rebar3 new release myapp</pre>
 
@@ -35,8 +35,8 @@ in the config/sys.config file put this:
     {cowboy_enhancer, [
         %% This is the main application name.
         {target_app, myapp},
-		
-		{templates_dir, "/view/templates"},
+
+        {templates_dir, "/view/templates"},
 
         %% shows more info in the console when system starts,
         %% more bigger the number is more detailed info is shown.
@@ -70,15 +70,15 @@ in the config/sys.config file put this:
 ].
 </pre>
 
-Configure it al will.
+Configure it at will.
 
-Then put the cowvoy_enhancer dependecy in rebar.config file located in myapp folder,
+Then put the cowvoy_enhancer dependency in rebar.config file located in myapp folder,
 
 <pre>
 {deps, [
     {cowboy_enhancer, {git, "git://github.com/StartSWest/cowboy_enhancer.git", {branch, master}}}]}.
 </pre>
 
-to start the system in develoment mode with your application included:
+to start the system in development mode with your application included:
 
 <pre>rebar3 shell</pre>
