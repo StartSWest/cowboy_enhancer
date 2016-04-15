@@ -15,8 +15,7 @@ start() ->
     start_verbose(100).
 
 start_dev() ->
-	
-    start_verbose(0),
+	start_verbose(0),
     observer:start().
 
 start_verbose(VerboseTime) ->
@@ -25,7 +24,7 @@ start_verbose(VerboseTime) ->
 
     verbose_log(1, "~nStarting 'cowboy_enhancer' framework...~n"),
     %% starts the framework.
-    {ok, _} = application:ensure_all_started(cowboy_enhancer),
+    %%{ok, _} = application:ensure_all_started(cowboy_enhancer),
     %% ensuring that other code remains sticky.
 
     %%     [code:stick_mod(M) || {M, F} <- code:all_loaded(),
@@ -48,7 +47,7 @@ start_verbose(VerboseTime) ->
     case config_manager:target_app() of
         {ok, App} ->
             %% starts the target application.
-            {ok, _} = application:ensure_all_started(App),
+            %%{ok, _} = application:ensure_all_started(App),
             timer:sleep(500),
             verbose_log(0, "~nSystem ready.~n");
         undefined ->
@@ -62,13 +61,23 @@ start_verbose(VerboseTime) ->
 %% Application Callbacks
 %% -------------------------------------------------------------------
 
+-ifdef(dev_mode).
+check_dev()->
+    io:format("~n~n *** DEVELOPMENT MODE ENABLED! ***~n~n").
+-else.
+check_dev()->
+    ok.
+-endif.
+
 start(_Type, _Args) ->
+    check_dev(),
+    start_verbose(0),
     %% Starts the supervisor.
     cowboy_enhancer_sup:start_link().
 
 stop(_State) ->
     verbose_log(1, "~n~nStopping system..."),
-    unprepare_code(),
+    %%unprepare_code(),
     ok.
 
 %% -------------------------------------------------------------------

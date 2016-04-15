@@ -91,7 +91,7 @@ disconnect(ConRef) ->
     Params :: [] | [any(), ...],
     Options :: proplists:proplist(),
     Other :: term().
--ifdef(development_mode).
+-ifdef(dev_mode).
 query(ConRef, Query, Params, Options) ->
     debug_logger:log_info_msg([Query, Params, Options]),
     query2(ConRef, Query, Params, Options).

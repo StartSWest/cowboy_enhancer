@@ -23,7 +23,7 @@
 %% -------------------------------------------------------------------
 
 %% this will only work if in 'development_mode'.
--ifdef(development_mode).
+-ifdef(dev_mode).
 execute(Req, Env) ->
     %% ********************************************************
     %% NOTE: If in development mode tries to reload the recently

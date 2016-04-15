@@ -51,7 +51,7 @@ log_error(Params) ->
     Reason :: term().
 
 %% this will only work if in 'development_mode'.
--ifdef(development_mode).
+-ifdef(dev_mode).
 log_error(ErrorFormat, Params) ->
     try
         error(log_error)
@@ -109,7 +109,7 @@ log_error_msg(Params) ->
     Params :: term(),
     Reason :: term().
 %% this will only work if in 'development_mode'.
--ifdef(development_mode).
+-ifdef(dev_mode).
 log_error_msg(ErrorFormat, Params) ->
     %%     case os:type() of
     %%         {win32, _} ->
