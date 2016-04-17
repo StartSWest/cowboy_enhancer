@@ -880,7 +880,7 @@ select_models(ModelName, MatchFieldSpecs, Options) ->
             internal_db_session(fun(DBSession) ->
                 %% searches for the model in the database.
                 database_manager:find(DBSession,
-                    ModelName, MatchFieldSpecs, [Options])
+                    ModelName, MatchFieldSpecs, Options)
             end, Options);
         Error ->
             Error
