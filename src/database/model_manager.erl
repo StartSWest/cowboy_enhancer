@@ -100,7 +100,7 @@
 %% </pre>
 %% Equivalent to:
 %% ```
-%%   new_model(ModelName, ModelDataMap, []).
+%%   new_model(ModelName, ModelDataMap, {vtags, []}).
 %% '''
 %% @see new_mode/3.
 %% @see store_model/1.
@@ -118,7 +118,7 @@
     ErrorMessages :: validation_errors(),
     Other :: term().
 new_model(ModelName, ModelDataMap) ->
-    new_model(ModelName, ModelDataMap, []).
+    new_model(ModelName, ModelDataMap, {vtags, []}).
 
 %% -------------------------------------------------------------------
 %% @doc
@@ -176,12 +176,13 @@ new_model(ModelName, ModelDataMap) ->
 %% <pre>
 %%   ModelDataMap = #{username => "John", password => "1eAfG6"},
 %%   {ok, ModelInfo} =
-%%       model_manager:new_model(users, ModelDataMap, [common, new]).
+%%       model_manager:new_model(users, ModelDataMap,
+%%                               {vtags, [common, new]}).
 %%
 %%   NewModelDataMap = #{username => "John C", online => true},
 %%   {ok, NewModelInfo} =
 %%       model_manager:update_model_by_id(users, Id,
-%%           NewModelDataMap, [common, update]).
+%%           NewModelDataMap, {vtags, [common, update]}).
 %% </pre>
 %% Note:<ul>
 %% <li>
@@ -190,7 +191,7 @@ new_model(ModelName, ModelDataMap) ->
 %% @see store_model/2.
 %% @end
 %% -------------------------------------------------------------------
--spec new_model(ModelName, ModelDataMap, ValidationTags) ->
+-spec new_model(ModelName, ModelDataMap, {vtags, ValidationTags}) ->
     {ok, model_info()}
     | {error, {model_without_model_module, ModelModule}}
     | {error, {validation_errors, ErrorMessages}}
@@ -201,7 +202,7 @@ new_model(ModelName, ModelDataMap) ->
     ModelModule :: atom(),
     ErrorMessages :: validation_errors(),
     Other :: term().
-new_model(ModelName, ModelDataMap, ValidationTags) ->
+new_model(ModelName, ModelDataMap, {vtags, ValidationTags}) ->
     %% does model validation stuffs.
     internal_query_model(ModelName, ModelDataMap, ValidationTags,
         fun(_, ModelModule, _) ->
@@ -248,7 +249,7 @@ new_model(ModelName, ModelDataMap, ValidationTags) ->
 %% </pre>
 %% Equivalent to:
 %% ```
-%%   update_model_by_id(ModelName, Id, NewModelDataMap, []).
+%%   update_model_by_id(ModelName, Id, NewModelDataMap, {vtags, []}).
 %% '''
 %% @see update_model_by_id/4.
 %% @see store_model/1.
@@ -268,7 +269,7 @@ new_model(ModelName, ModelDataMap, ValidationTags) ->
     ErrorMessages :: validation_errors(),
     Other :: term().
 update_model_by_id(ModelName, Id, ModelDataMap) ->
-    update_model_by_id(ModelName, Id, ModelDataMap, []).
+    update_model_by_id(ModelName, Id, ModelDataMap, {vtags, []}).
 
 %% -------------------------------------------------------------------
 %% @doc
@@ -331,7 +332,8 @@ update_model_by_id(ModelName, Id, ModelDataMap) ->
 %%
 %%   ModelDataMap = #{username => "John", password => "1eAfG6"},
 %%   {ok, ModelInfo2} =
-%%       model_manager:new_model(users, ModelDataMap, [common, new]).
+%%       model_manager:new_model(users, ModelDataMap,
+%%                               {vtags, [common, new]}).
 %% </pre>
 %% Note:<ul>
 %% <li>
@@ -340,7 +342,7 @@ update_model_by_id(ModelName, Id, ModelDataMap) ->
 %% @see store_model/2.
 %% @end
 %% -------------------------------------------------------------------
--spec update_model_by_id(ModelName, Id, ModelDataMap, ValidationTags) ->
+-spec update_model_by_id(ModelName, Id, ModelDataMap, {vtags, ValidationTags}) ->
     {ok, model_info()}
     | {error, {model_without_model_module, ModelModule}}
     | {error, {validation_errors, ErrorMessages}}
@@ -352,7 +354,7 @@ update_model_by_id(ModelName, Id, ModelDataMap) ->
     ModelModule :: atom(),
     ErrorMessages :: validation_errors(),
     Other :: term().
-update_model_by_id(ModelName, Id, ModelDataMap, ValidationTags) ->
+update_model_by_id(ModelName, Id, ModelDataMap, {vtags, ValidationTags}) ->
     %% does model validation stuffs.
     internal_query_model(ModelName, ModelDataMap, ValidationTags,
         fun(_, ModelModule, _) ->
@@ -403,11 +405,12 @@ update_model_by_id(ModelName, Id, ModelDataMap, ValidationTags) ->
 %%   NewModelDataMap = #{age => 32},
 %%   {ok, NewModelInfo} =
 %%       model_manager:update_model(users,
-%%           NewModelDataMap, [{id, '==', Id}]).
+%%           [{id, '==', Id}], NewModelDataMap).
 %% </pre>
 %% Equivalent to:
 %% ```
-%%   update_model(ModelName, NewModelDataMap, MatchFieldSpecs, []).
+%%   update_model(ModelName, MatchFieldSpecs, NewModelDataMap,
+%%                {vtags, []}).
 %% '''
 %% Note:<ul>
 %% <li>
@@ -419,7 +422,7 @@ update_model_by_id(ModelName, Id, ModelDataMap, ValidationTags) ->
 %% @see database_manager:update/4.
 %% @end
 %% -------------------------------------------------------------------
--spec update_model(ModelName, ModelDataMap, MatchFieldSpecs) ->
+-spec update_model(ModelName, MatchFieldSpecs, ModelDataMap) ->
     {ok, model_info()}
     | {error, {model_without_model_module, ModelModule}}
     | {error, {validation_errors, ErrorMessages}}
@@ -430,8 +433,8 @@ update_model_by_id(ModelName, Id, ModelDataMap, ValidationTags) ->
     ModelModule :: atom(),
     ErrorMessages :: validation_errors(),
     Other :: term().
-update_model(ModelName, ModelDataMap, MatchFieldSpecs) ->
-    update_model(ModelName, ModelDataMap, MatchFieldSpecs, []).
+update_model(ModelName, MatchFieldSpecs, ModelDataMap) ->
+    update_model(ModelName, MatchFieldSpecs, ModelDataMap, {vtags, []}).
 
 %% -------------------------------------------------------------------
 %% @doc
@@ -490,13 +493,15 @@ update_model(ModelName, ModelDataMap, MatchFieldSpecs) ->
 %%   NewModelDataMap = #{age => 32},
 %%   {ok, NewModelInfo} =
 %%       model_manager:update_model(users,
-%%           NewModelDataMap, [{id, '==', Id}], [common, update]).
+%%           [{id, '==', Id}], NewModelDataMap
+%%               {vtags, [common, update]}).
 %% </pre>
 %%   or
 %% <pre>
 %%   ModelDataMap = #{username => "John", password => "1eAfG6"},
 %%   {ok, ModelInfo} =
-%%       model_manager:new_model(users, ModelDataMap, [common, new]).
+%%       model_manager:new_model(users, ModelDataMap,
+%%                               {vtags, [common, new]}).
 %% </pre>
 %% Note:<ul>
 %% <li>
@@ -509,7 +514,7 @@ update_model(ModelName, ModelDataMap, MatchFieldSpecs) ->
 %% @see database_manager:update/4.
 %% @end
 %% -------------------------------------------------------------------
--spec update_model(ModelName, ModelDataMap, MatchFieldSpecs, ValidationTags) ->
+-spec update_model(ModelName, MatchFieldSpecs, ModelDataMap, {vtags, ValidationTags}) ->
     {ok, model_info()}
     | {error, {model_without_model_module, ModelModule}}
     | {error, {validation_errors, ErrorMessages}}
@@ -521,7 +526,7 @@ update_model(ModelName, ModelDataMap, MatchFieldSpecs) ->
     ModelModule :: atom(),
     ErrorMessages :: validation_errors(),
     Other :: term().
-update_model(ModelName, ModelDataMap, MatchFieldSpecs, ValidationTags) ->
+update_model(ModelName, MatchFieldSpecs, ModelDataMap, {vtags, ValidationTags}) ->
     %% does model validation stuffs.
     internal_query_model(ModelName, ModelDataMap, ValidationTags,
         fun(_, ModelModule, _) ->
@@ -875,13 +880,8 @@ select_models(ModelName, MatchFieldSpecs) ->
     Other :: term().
 select_models(ModelName, MatchFieldSpecs, Options) ->
     case get_and_check_model_module(ModelName) of
-        {ok, _ModelModule} ->
-            %% creates or reuses a db session.
-            internal_db_session(fun(DBSession) ->
-                %% searches for the model in the database.
-                database_manager:find(DBSession,
-                    ModelName, MatchFieldSpecs, Options)
-            end, Options);
+        {ok, ModelModule} ->
+            internal_select(ModelName, ModelModule, MatchFieldSpecs, Options);
         Error ->
             Error
     end.
@@ -1303,7 +1303,8 @@ store_model(ModelInfo, Options) ->
 %%  `{error, term()}'.</li></ul>
 %% Example:
 %% <pre>
-%%   model_manager:query_model(users, ModelDataMap, [common, other],
+%%   model_manager:query_model(users, ModelDataMap,
+%%       {vtags, [common, other]},
 %%       fun(ModelName, ModelModule, ModelData) ->
 %%           {ok, Result} = ...
 %%       end).
@@ -1311,7 +1312,7 @@ store_model(ModelInfo, Options) ->
 %% NOTE: `always' validation tag will be always used if exist.
 %% @end
 %% -------------------------------------------------------------------
--spec query_model(ModelName, ModelDataMap, ValidationTags, Fun) ->
+-spec query_model(ModelName, ModelDataMap, {vtags, ValidationTags}, Fun) ->
     FunResult
     | {error, {model_without_model_module, ModelModule}}
     | {error, {validation_errors, ErrorMessages}}
@@ -1324,7 +1325,7 @@ store_model(ModelInfo, Options) ->
     ModelModule :: atom(),
     ErrorMessages :: validation_errors(),
     Other :: term().
-query_model(ModelName, ModelDataMap, ValidationTags, Fun) ->
+query_model(ModelName, ModelDataMap, {vtags, ValidationTags}, Fun) ->
     internal_query_model(ModelName, ModelDataMap, ValidationTags, Fun).
 
 %% -------------------------------------------------------------------
@@ -1665,27 +1666,35 @@ do_validation(_, []) ->
     ok;
 do_validation(ValidationTags, FullValidationTests) ->
     %% gets all validation tests for specified 'ValidationTags'.
-    ValidationTests = filter_validation_tests_by_tags(ValidationTags, FullValidationTests),
-    %% does the assertion on each validation function.
-    Messages = lists:foldr(
-        fun({F, ErrorMessage}, Acc) ->
-            case F() of
-                true ->
-                    %% if validates ok.
-                    Acc;
-                false ->
-                    %% if validation fails, returns fail assertion message.
-                    [ErrorMessage | Acc]
+    ValidationTests =
+        filter_validation_tests_by_tags(ValidationTags, FullValidationTests),
+    case ValidationTests of
+        [] ->
+            throw({error, {no_validation_tests_for_specified_vtags, ValidationTags}});
+        _ ->
+            %% does the assertion on each validation function.
+            Messages = lists:foldr(
+                fun({F, ErrorMessage}, Acc) ->
+                    case catch (F()) of
+                        true ->
+                            %% if validates ok.
+                            Acc;
+                        false ->
+                            %% if validation fails, returns fail assertion message.
+                            [ErrorMessage | Acc];
+                        {'EXIT', Error} ->
+                            [Error | Acc]
+                    end
+                end, [], ValidationTests),
+            %% checks if any validation was fail.
+            case Messages of
+                [] ->
+                    %% if all assertion test where fine.
+                    ok;
+                _ ->
+                    %% if some fail.
+                    {error, Messages}
             end
-        end, [], ValidationTests),
-    %% checks if any validation was fail.
-    case Messages == [] of
-        true ->
-            %% if all assertion test where fine.
-            ok;
-        false ->
-            %% if some fail.
-            {error, Messages}
     end.
 
 %% -------------------------------------------------------------------
@@ -1866,7 +1875,7 @@ internal_insert(DBSession, ModelName, ModelDataMap, ReturnId, Options) ->
                 Options;
             {id_field_name, IdFieldName} ->
                 %% ignores 'ReturnFields', so uses only 'return_id'.
-                [{result_format, proplist}, {return_fields, [IdFieldName]}]
+                expand_return_id(Options, IdFieldName)
         end,
     R = database_manager:insert(DBSession, {ModelName, ModelDataMap}, NewOptions),
     process_reply(R, {no_action_message, nothing_to_insert}).
@@ -1903,7 +1912,7 @@ internal_update(DBSession, ModelName, ModelDataMap,
                 Options;
             {id_field_name, IdFieldName} ->
                 %% ignores 'ReturnFields', so uses only 'return_id'.
-                [{result_format, proplist}, {return_fields, [IdFieldName]}]
+                expand_return_id(Options, IdFieldName)
         end,
     R = database_manager:update(DBSession, {ModelName, ModelDataMap},
         MatchFieldSpecs, NewOptions),
@@ -1937,13 +1946,32 @@ internal_delete(ModelName, MatchFieldSpecs, ReturnId, Options) ->
                 Options;
             {id_field_name, IdFieldName} ->
                 %% ignores 'ReturnFields', so uses only 'return_id'.
-                [{result_format, proplist}, {return_fields, [IdFieldName]}]
+                expand_return_id(Options, IdFieldName)
         end,
     %% creates or reuses a db session.
     internal_db_session(fun(DBSession) ->
         %% deletes the model from the database.
         R = database_manager:delete(DBSession, ModelName, MatchFieldSpecs, NewOptions),
         process_reply(R, {no_action_message, nothing_to_delete})
+    end, Options).
+
+internal_select(ModelName, ModelModule, MatchFieldSpecs, Options) ->
+    NewOptions =
+        case lists:member(return_id, Options) of
+            true ->
+                %% in case 'Options' have 'return_id'.
+                %% gets the id field name from the model.
+                ModelId = get_model_id_field_name(ModelModule),
+                expand_return_id(Options, ModelId);
+            false ->
+                Options
+        end,
+    %% creates or reuses a db session.
+    internal_db_session(fun(DBSession) ->
+        %% searches for the model in the database.
+        R = database_manager:find(DBSession,
+            ModelName, MatchFieldSpecs, NewOptions),
+        process_reply(R, {no_action_message, none})
     end, Options).
 
 %% -------------------------------------------------------------------
@@ -1960,9 +1988,10 @@ internal_delete(ModelName, MatchFieldSpecs, ReturnId, Options) ->
 %% Other
 process_reply(R, {no_action_message, NoActionMessage}) ->
     case R of
+        %% for insert, delete, update.
         {ok, 1} ->
             ok;
-        {ok, N} when N > 0 ->
+        {ok, N} when is_number(N), N > 0 ->
             {ok, {count, N}};
         {ok, 1, [[{_, ID}]]} ->
             {ok, ID};
@@ -1975,6 +2004,12 @@ process_reply(R, {no_action_message, NoActionMessage}) ->
             {ok, FieldData, {count, N}};
         {ok, 0} ->
             {ok, NoActionMessage};
+        %% for select.
+        {ok, [[{_, ID}]]} ->
+            {ok, ID};
+        {ok, [[{_, _ID}] | _] = ListOfIDs} ->
+            %% returns just the ids in a list.
+            {ok, lists:map(fun([{_, ID}]) -> ID end, ListOfIDs)};
         Other ->
             Other
     end.
@@ -2070,4 +2105,12 @@ get_and_check_model_module(ModelName) ->
             debug_logger:log_error(
                 "There is not a module named: '~p' for model: '~p'", [ModelModule, ModelName]),
             {error, {model_without_model_module, ModelModule}}
+    end.
+
+expand_return_id(Options, Id) ->
+    case lists:member(return_id, Options) of
+        true ->
+            [{return_fields, [Id]}, {result_format, proplist} | Options];
+        false ->
+            Options
     end.
