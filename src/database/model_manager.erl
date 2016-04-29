@@ -599,9 +599,7 @@ get_model_by_id(ModelName, ID) ->
 %%       [field_name(), ...] | ['*']}
 %%
 %%   {return_id}               %% Overrides 'return_fields'
-%%                                option. Makes the function to return
-%%                                {ok, ID} |
-%%                                {ok, [ID, ...], {count, Count}}
+%%                                option to return only the id.
 %%   {result_format,
 %%       raw | map | proplist} %% For `return_fields'.
 %%                                `map' will be the default
@@ -721,9 +719,7 @@ get_model(ModelName, MatchFieldSpecs) ->
 %%       [field_name(), ...] | ['*']}
 %%
 %%   {return_id}               %% Overrides 'return_fields'
-%%                                option. Makes the function to return
-%%                                {ok, ID} |
-%%                                {ok, [ID, ...], {count, Count}}
+%%                                option to return only the id.
 %%   {result_format,
 %%       raw | map | proplist} %% For `return_fields'.
 %%                                `map' will be the default
@@ -836,9 +832,7 @@ select_models(ModelName, MatchFieldSpecs) ->
 %%       [field_name(), ...] | ['*']}
 %%
 %%   {return_id}               %% Overrides 'return_fields'
-%%                                option. Makes the function to return
-%%                                {ok, ID} |
-%%                                {ok, [ID, ...], {count, Count}}
+%%                                option to return only the id.
 %%   {result_format,
 %%       raw | map | proplist} %% For `return_fields'.
 %%                                `map' will be the default
@@ -947,9 +941,7 @@ delete_model_by_id(ModelName, ID) ->
 %%       [field_name(), ...] | ['*']}
 %%
 %%   {return_id}               %% Overrides 'return_fields'
-%%                                option. Makes the function to return
-%%                                {ok, ID} |
-%%                                {ok, [ID, ...], {count, Count}}
+%%                                option to return only the id.
 %%   {result_format,
 %%       raw | map | proplist} %% For 'return_fields'.
 %%                                'map' will be the default
@@ -1067,9 +1059,7 @@ delete_model(ModelName, MatchFieldSpecs) ->
 %%       [field_name(), ...] | ['*']}
 %%
 %%   {return_id}               %% Overrides 'return_fields'
-%%                                option. Makes the function to return
-%%                                {ok, ID} |
-%%                                {ok, [ID, ...], {count, Count}}
+%%                                option to return only the id.
 %%   {result_format,
 %%       raw | map | proplist} %% For 'return_fields'.
 %%                                'map' will be the default
@@ -1143,7 +1133,8 @@ delete_model(ModelName, MatchFieldSpecs, Options) ->
 %%  i.e.:
 %%  ```
 %%  model_manager:store_block(fun(_DBSession) ->
-%%      {ok, ID} = model_manager:store_model(ModelInfo, [return_id]),
+%%      {ok, {id := Id}} =
+%%          model_manager:store_model(ModelInfo, [return_id]),
 %%      {ok, ModelInfo2} =
 %%          model_manager:new_model(user_blogs, #{
 %%              {user_id => ID, blog_name => "test"}),
@@ -1200,9 +1191,7 @@ store_model(ModelInfo) ->
 %%       [field_name(), ...] | ['*']}
 %%
 %%   {return_id}               %% Overrides 'return_fields'
-%%                                option. Makes the function to return
-%%                                {ok, ID} |
-%%                                {ok, [ID, ...], {count, Count}}
+%%                                option to return only the id.
 %%   {result_format,
 %%       raw | map | proplist} %% For 'return_fields'.
 %%                                'map' will be the default
@@ -1211,7 +1200,7 @@ store_model(ModelInfo) ->
 %% '''
 %% Example:
 %% <pre>
-%%   {ok, ID} =
+%%   {ok, {id := ID}} =
 %%       model_manager:store_model(ModelInfo, [return_id,
 %%           {backend, main_backend}, {timeout, infinity}]).
 %%
@@ -1241,7 +1230,8 @@ store_model(ModelInfo) ->
 %%  i.e.:
 %%  ```
 %%  model_manager:store_block(fun(_DBSession) ->
-%%      {ok, ID} = model_manager:store_model(ModelInfo, [return_id]),
+%%      {ok, {id := ID}} =
+%%          model_manager:store_model(ModelInfo, [return_id]),
 %%      {ok, ModelInfo2} =
 %%          model_manager:new_model(user_blogs, #{
 %%              {user_id => ID, blog_name => "test"}),
@@ -1348,7 +1338,8 @@ query_model(ModelName, ModelDataMap, {vtags, ValidationTags}, Fun) ->
 %% Example:
 %% <pre>
 %%   model_manager:store_block(fun(_DBSession) ->
-%%       {ok, ID} = model_manager:store_model(ModelInfo, [return_id]),
+%%       {ok, {id := ID}} =
+%%           model_manager:store_model(ModelInfo, [return_id]),
 %%       {ok, ModelInfo2} = model_manager:new_model(user_blogs, #{
 %%                              {user_id => ID, blog_name => "test"}),
 %%       ok = model_manager:store_model(ModelInfo2)
@@ -1365,8 +1356,8 @@ query_model(ModelName, ModelDataMap, {vtags, ValidationTags}, Fun) ->
 %% Example2:
 %% <pre>
 %%   model_manager:store_block(fun(DBSession) ->
-%%       {ok, ID} = model_manager:store_model(ModelInfo,
-%%                      [return_id]),
+%%       {ok, {id := ID}} =
+%%           model_manager:store_model(ModelInfo, [return_id]),
 %%       database_manager:insert(DBSession,
 %%           {user_messages, #{user_id => ID, message => "new user"})
 %%   end).
@@ -1420,9 +1411,7 @@ store_block(Fun) ->
 %%       [field_name(), ...] | ['*']}
 %%
 %%   {return_id}               %% Overrides 'return_fields'
-%%                                option. Makes the function to return
-%%                                {ok, ID} |
-%%                                {ok, [ID, ...], {count, Count}}
+%%                                option to return only the id.
 %%   {result_format,
 %%       raw | map | proplist} %% For 'return_fields'.
 %%                                'map' will be the default
@@ -1432,8 +1421,8 @@ store_block(Fun) ->
 %% Example:
 %% <pre>
 %%   model_manager:store_block(fun(_DBSession) ->
-%%       {ok, ID} = model_manager:store_model(ModelInfo,
-%%                      [return_id]),
+%%       {ok, {id := ID}} =
+%%           model_manager:store_model(ModelInfo, [return_id]),
 %%       {ok, ModelInfo2} = model_manager:new_model(user_blogs, #{
 %%                              {user_id => ID, blog_name => "test"}),
 %%       ok = model_manager:store_model(ModelInfo2)
@@ -1450,8 +1439,8 @@ store_block(Fun) ->
 %% Example2:
 %% <pre>
 %%   model_manager:store_block(fun(DBSession) ->
-%%       {ok, ID} = model_manager:store_model(ModelInfo,
-%%                      [return_id]),
+%%       {ok, {id := ID}} =
+%%           model_manager:store_model(ModelInfo, [return_id]),
 %%       database_manager:insert(DBSession,
 %%           {user_messages, #{user_id => ID, message => "new user"})
 %%   end, [{backend, main_backend}, {timeout, infinity}]).
@@ -1501,8 +1490,8 @@ store_block(Fun, Options) ->
 %% Example:
 %% <pre>
 %%   model_manager:store_block_transaction(fun(_DBSession) ->
-%%       {ok, ID} = model_manager:store_model(ModelInfo,
-%%                      [return_id]),
+%%       {ok, {id := ID}} =
+%%           model_manager:store_model(ModelInfo, [return_id]),
 %%       {ok, ModelInfo2} = model_manager:new_model(user_blogs, #{
 %%                              {user_id => ID, blog_name => "test"}),
 %%       ok = model_manager:store_model(ModelInfo2)
@@ -1517,8 +1506,8 @@ store_block(Fun, Options) ->
 %% Example2:
 %% <pre>
 %%   model_manager:store_block_transaction(fun(DBSession) ->
-%%       {ok, ID} = model_manager:store_model(ModelInfo,
-%%                      [return_id]),
+%%       {ok, {id := ID}} =
+%%           model_manager:store_model(ModelInfo, [return_id]),
 %%       database_manager:transaction(DBSession, fun() ->
 %%           database_manager:insert(DBSession, {user_messages,
 %%               #{user_id => ID, message => "new user"})
@@ -1562,8 +1551,8 @@ store_block_transaction(Fun) ->
 %% Example:
 %% <pre>
 %%   model_manager:store_block_transaction(fun(_DBSession) ->
-%%       {ok, ID} = model_manager:store_model(ModelInfo,
-%%                      [return_id]),
+%%       {ok, {id := ID}} =
+%%           model_manager:store_model(ModelInfo, [return_id]),
 %%       {ok, ModelInfo2} = model_manager:new_model(user_blogs, #{
 %%                              {user_id => ID, blog_name => "test"}),
 %%       ok = model_manager:store_model(ModelInfo2)
@@ -1577,8 +1566,8 @@ store_block_transaction(Fun) ->
 %% Example2:
 %% <pre>
 %%   model_manager:store_block_transaction(fun(DBSession) ->
-%%       {ok, ID} = model_manager:store_model(ModelInfo,
-%%                      [return_id]),
+%%       {ok, {id := ID}} =
+%%           model_manager:store_model(ModelInfo, [return_id]),
 %%       database_manager:transaction(DBSession, fun() ->
 %%           database_manager:insert(DBSession, {user_messages,
 %%                   #{user_id => ID, message => "new user"})
@@ -1993,23 +1982,12 @@ process_reply(R, {no_action_message, NoActionMessage}) ->
             ok;
         {ok, N} when is_number(N), N > 0 ->
             {ok, {count, N}};
-        {ok, 1, [[{_, ID}]]} ->
-            {ok, ID};
-        {ok, N, [[{_, _ID}] | _] = ListOfIDs} when N > 1 ->
-            %% returns just the ids in a list.
-            {ok, lists:map(fun([{_, ID}]) -> ID end, ListOfIDs), {count, N}};
         {ok, 1, FieldData} ->
             {ok, FieldData};
         {ok, N, FieldData} when N > 0 ->
             {ok, FieldData, {count, N}};
         {ok, 0} ->
             {ok, NoActionMessage};
-        %% for select.
-        {ok, [[{_, ID}]]} ->
-            {ok, ID};
-        {ok, [[{_, _ID}] | _] = ListOfIDs} ->
-            %% returns just the ids in a list.
-            {ok, lists:map(fun([{_, ID}]) -> ID end, ListOfIDs)};
         Other ->
             Other
     end.
@@ -2110,7 +2088,7 @@ get_and_check_model_module(ModelName) ->
 expand_return_id(Options, Id) ->
     case lists:member(return_id, Options) of
         true ->
-            [{return_fields, [Id]}, {result_format, proplist} | Options];
+            [{return_fields, [Id]} | Options];
         false ->
             Options
     end.
