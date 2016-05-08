@@ -58,10 +58,14 @@ connect(Server, Username, Password, Database, Timeout) ->
         {ConRef, Ref, connected} ->
             {ok, ConRef};
         {ConRef, Ref, Error = {error, _}} ->
-            debug_logger:log_error("Couldn't connect to the database: ~p", [Error]),
+            debug_logger:log_error(
+                erlang:get_stacktrace(),
+                "Couldn't connect to the database: ~p", [Error]),
             Error;
         {'EXIT', ConRef, _Reason} ->
-            debug_logger:log_error("Database connection closed, ConRef: ~p", [ConRef]),
+            debug_logger:log_error(
+                erlang:get_stacktrace(),
+                "Database connection closed, ConRef: ~p", [ConRef]),
             {error, closed}
     end.
 
@@ -91,26 +95,19 @@ disconnect(ConRef) ->
     Params :: [] | [any(), ...],
     Options :: proplists:proplist(),
     Other :: term().
--ifdef(dev_mode).
 query(ConRef, Query, Params, Options) ->
-    debug_logger:log_info_msg([Query, Params, Options]),
-    query2(ConRef, Query, Params, Options).
--else.
-query(ConRef, Query, Params, Options) ->
-    query2(ConRef, Query, Params, Options).
--endif.
-%% @private
-query2(ConRef, Query, Params, Options) ->
     case Params of
         [] ->
             Ref = epgsqla:squery(ConRef, Query),
             receive
                 {ConRef, Ref, {error, Reason}} ->
                     %% logs errors from 'squery'.
-                    debug_logger:log_error("DATABASE_SIMPLE_QUERY_ERROR: ~p", [Reason]),
+                    debug_logger:log_error(
+                        erlang:get_stacktrace(),
+                        "DATABASE_SIMPLE_QUERY_ERROR: ~p", [Reason]),
                     {error, Reason};
                 {ConRef, Ref, Result} ->
-                    to_result_format(Result, Options)
+                    log_result(Query, Params, Options, Result)
             end;
         EQParams ->
             case parse(ConRef, Query) of
@@ -119,19 +116,49 @@ query2(ConRef, Query, Params, Options) ->
                     receive
                         {ConRef, Ref, {error, Reason}} ->
                             %% logs errors from 'equery'.
-                            debug_logger:log_error("DATABASE_QUERY_ERROR: ~p", [Reason]),
+                            debug_logger:log_error(
+                                erlang:get_stacktrace(),
+                                "DATABASE_QUERY_ERROR: ~p", [Reason]),
                             {error, Reason};
                         {ConRef, Ref, Result} ->
-                            to_result_format(Result, Options)
+                            log_result(Query, Params, Options, Result)
+
                     end;
                 {error, Reason} ->
                     %% in case of parse error sync is required.
                     epgsql:sync(ConRef),
                     %% logs errors from 'parse'.
-                    debug_logger:log_error("DATABASE_PARSE_ERROR: ~p", [Reason]),
+                    debug_logger:log_error(
+                        erlang:get_stacktrace(),
+                        "DATABASE_PARSE_ERROR: ~p", [Reason]),
                     {error, Reason}
             end
     end.
+
+-ifdef(dev_mode).
+log_result(Query, Params, Options, RawResult) ->
+    Result = to_result_format(RawResult, Options),
+    debug_logger:log_info_msg(
+        "~n    Query: ~p"
+        "~n    Params:~p"
+        "~n    Options:~p"
+        "~n    RawResult: ~p"
+        "~n    Result:~p",
+        [Query, Params, Options, RawResult, Result]),
+    Result.
+-else.
+log_result(Query, Params, Options, RawResult) ->
+    %% TODO: remove the log later when the dev mode is working.
+    Result = to_result_format(RawResult, Options),
+    debug_logger:log_info_msg(
+        "~n    Query: ~p"
+        "~n    Params:~p"
+        "~n    Options:~p"
+        "~n    RawResult: ~p"
+        "~n    Result:~p",
+        [Query, Params, Options, RawResult, Result]),
+    Result.
+-endif.
 
 %%-------------------------------------------------------------------
 %% @doc
@@ -140,7 +167,7 @@ query2(ConRef, Query, Params, Options) ->
 %%-------------------------------------------------------------------
 -spec transaction(ConRef, Fun) ->
     Reply
-    | {error, Reason} when
+    | {error, {rollback, Reason}} when
     ConRef :: epgsql:connection(),
     Fun :: fun(),
     Reply :: any(),
@@ -149,8 +176,11 @@ transaction(ConRef, Fun) ->
     TR = epgsql:with_transaction(ConRef, fun(_) -> Fun() end),
     case TR of
         {rollback, Reason} ->
-            debug_logger:log_error("QUERY_TRANSACTION_ERROR: ~p", [Reason]),
-            {error, Reason};
+            debug_logger:log_error(
+                erlang:get_stacktrace(),
+                "QUERY_TRANSACTION_ERROR: ~p",
+                [Reason]),
+            {error, {rollback, Reason}};
         Result ->
             Result
     end.

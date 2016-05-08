@@ -13,8 +13,8 @@
 %% API Exports
 %% -------------------------------------------------------------------
 -export([
-    log_error/1,
     log_error/2,
+    log_error/3,
     log_error_msg/1,
     log_error_msg/2,
     log_warning_msg/1,
@@ -32,11 +32,12 @@
 %% NOTE: 'Params' is the same as io:format("~p", [Params]).
 %% @end
 %% -------------------------------------------------------------------
--spec log_error(Params) -> ok | {error, Reason} when
+-spec log_error(StackTrace, Params) -> ok | {error, Reason} when
+    StackTrace :: term(),
     Params :: term(),
     Reason :: term().
-log_error(Params) ->
-    log_error("~p", [Params]).
+log_error(StackTrace, Params) ->
+    log_error(StackTrace, "~p", [Params]).
 
 %% -------------------------------------------------------------------
 %% @doc
@@ -45,35 +46,12 @@ log_error(Params) ->
 %%       io:format(ErrorFormat, [Params]).
 %% @end
 %% -------------------------------------------------------------------
--spec log_error(ErrorFormat, Params) -> ok | {error, Reason} when
+-spec log_error(StackTrace, ErrorFormat, Params) -> ok | {error, Reason} when
+    StackTrace :: term(),
     ErrorFormat :: string(),
     Params :: term(),
     Reason :: term().
-
-%% this will only work if in 'development_mode'.
--ifdef(dev_mode).
-log_error(ErrorFormat, Params) ->
-    try
-        error(log_error)
-    catch
-        error:log_error ->
-            %%             case os:type() of
-            %%                 {win32, _} ->
-            %%                     io:format(standard_error,
-            %%                         "\n==================== Debug Logger! ====================\n"
-            %%                         "  ERROR: " ++ ErrorFormat ++ "\n  StackTrace: ~p~n",
-            %%                         Params ++ [erlang:get_stacktrace()]);
-            %%                 _ ->
-            %%                     ignored
-            %%             end,
-            error_logger:error_msg(
-                "\n==================== Debug Logger! ====================\n"
-                "  ERROR: " ++ ErrorFormat ++ "\n  StackTrace: ~p~n",
-                Params ++ [erlang:get_stacktrace()])
-    end.
--else.
-%% in production.
-log_error(ErrorFormat, Params) ->
+log_error(StackTrace, ErrorFormat, Params) ->
     try
         error(log_error)
     catch
@@ -81,9 +59,8 @@ log_error(ErrorFormat, Params) ->
             error_logger:error_msg(
                 "\n==================== Debug Logger! ====================\n"
                 "  ERROR: " ++ ErrorFormat ++ "\n  StackTrace: ~p~n",
-                Params ++ [erlang:get_stacktrace()])
+                Params ++ [StackTrace])
     end.
--endif.
 
 %% -------------------------------------------------------------------
 %% @doc
@@ -108,27 +85,10 @@ log_error_msg(Params) ->
     ErrorFormat :: string(),
     Params :: term(),
     Reason :: term().
-%% this will only work if in 'development_mode'.
--ifdef(dev_mode).
-log_error_msg(ErrorFormat, Params) ->
-    %%     case os:type() of
-    %%         {win32, _} ->
-    %%             io:format(standard_error,
-    %%                 "\n==================== Debug Logger! ====================\n"
-    %%                 "  ERROR: " ++ ErrorFormat ++ "~n", Params);
-    %%         _ ->
-    %%             ignored
-    %%     end,
-    error_logger:error_msg(
-        "\n==================== Debug Logger! ====================\n"
-        "  ERROR: " ++ ErrorFormat ++ "~n", Params).
--else.
-%% in production.
 log_error_msg(ErrorFormat, Params) ->
     error_logger:error_msg(
         "\n==================== Debug Logger! ====================\n"
         "  ERROR: " ++ ErrorFormat ++ "~n", Params).
--endif.
 
 %% -------------------------------------------------------------------
 %% @doc

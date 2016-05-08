@@ -118,7 +118,7 @@
     ErrorMessages :: validation_errors(),
     Other :: term().
 new_model(ModelName, ModelDataMap) ->
-    new_model(ModelName, ModelDataMap, {vtags, []}).
+    new_model(ModelName, ModelDataMap, [{vtags, []}]).
 
 %% -------------------------------------------------------------------
 %% @doc
@@ -203,6 +203,8 @@ new_model(ModelName, ModelDataMap) ->
     ErrorMessages :: validation_errors(),
     Other :: term().
 new_model(ModelName, ModelDataMap, {vtags, ValidationTags}) ->
+    new_model(ModelName, ModelDataMap, [{vtags, ValidationTags}]);
+new_model(ModelName, ModelDataMap, [{vtags, ValidationTags}]) ->
     %% does model validation stuffs.
     internal_query_model(ModelName, ModelDataMap, ValidationTags,
         fun(_, ModelModule, _) ->
@@ -269,7 +271,7 @@ new_model(ModelName, ModelDataMap, {vtags, ValidationTags}) ->
     ErrorMessages :: validation_errors(),
     Other :: term().
 update_model_by_id(ModelName, Id, ModelDataMap) ->
-    update_model_by_id(ModelName, Id, ModelDataMap, {vtags, []}).
+    update_model_by_id(ModelName, Id, ModelDataMap, [{vtags, []}]).
 
 %% -------------------------------------------------------------------
 %% @doc
@@ -355,6 +357,8 @@ update_model_by_id(ModelName, Id, ModelDataMap) ->
     ErrorMessages :: validation_errors(),
     Other :: term().
 update_model_by_id(ModelName, Id, ModelDataMap, {vtags, ValidationTags}) ->
+    update_model_by_id(ModelName, Id, ModelDataMap, [{vtags, ValidationTags}]);
+update_model_by_id(ModelName, Id, ModelDataMap, [{vtags, ValidationTags}]) ->
     %% does model validation stuffs.
     internal_query_model(ModelName, ModelDataMap, ValidationTags,
         fun(_, ModelModule, _) ->
@@ -1531,9 +1535,11 @@ store_block(Fun, Options) ->
 -spec store_block_transaction(Fun) ->
     any()
     | {error, no_available_connection}
+    | {error, {rollback, Reason}}
     | {error, Other} when
     Fun :: fun(),
-    Other :: term().
+    Other :: term(),
+    Reason :: term().
 store_block_transaction(Fun) ->
     store_block_transaction(Fun, []).
 
@@ -1657,33 +1663,28 @@ do_validation(ValidationTags, FullValidationTests) ->
     %% gets all validation tests for specified 'ValidationTags'.
     ValidationTests =
         filter_validation_tests_by_tags(ValidationTags, FullValidationTests),
-    case ValidationTests of
-        [] ->
-            throw({error, {no_validation_tests_for_specified_vtags, ValidationTags}});
-        _ ->
-            %% does the assertion on each validation function.
-            Messages = lists:foldr(
-                fun({F, ErrorMessage}, Acc) ->
-                    case catch (F()) of
-                        true ->
-                            %% if validates ok.
-                            Acc;
-                        false ->
-                            %% if validation fails, returns fail assertion message.
-                            [ErrorMessage | Acc];
-                        {'EXIT', Error} ->
-                            [Error | Acc]
-                    end
-                end, [], ValidationTests),
-            %% checks if any validation was fail.
-            case Messages of
-                [] ->
-                    %% if all assertion test where fine.
-                    ok;
-                _ ->
-                    %% if some fail.
-                    {error, Messages}
+    %% does the assertion on each validation function.
+    Messages = lists:foldr(
+        fun({F, ErrorMessage}, Acc) ->
+            case catch (F()) of
+                true ->
+                    %% if validates ok.
+                    Acc;
+                false ->
+                    %% if validation fails, returns fail assertion message.
+                    [ErrorMessage | Acc];
+                {'EXIT', Error} ->
+                    [Error | Acc]
             end
+        end, [], ValidationTests),
+    %% checks if any validation was fail.
+    case Messages of
+        [] ->
+            %% if all assertion test where fine.
+            ok;
+        _ ->
+            %% if some fail.
+            {error, Messages}
     end.
 
 %% -------------------------------------------------------------------
@@ -1756,9 +1757,7 @@ exec_after_validate(ModelModule, ModelDataMap) ->
     ModelModule :: atom(),
     ErrorMessages :: validation_errors(),
     Other :: term().
-internal_query_model(ModelName, ModelDataMap, [], Fun) ->
-    internal_query_model(ModelName, ModelDataMap, [always], Fun);
-internal_query_model(ModelName, ModelDataMap, [Tag | _] = ValidationTags, Fun) when is_atom(Tag) ->
+internal_query_model(ModelName, ModelDataMap, ValidationTags, Fun) ->
     %% checks if 'ModelModule' module exist.
     %% NOTE: the module has to be previously loaded for this to work, luckily the framework
     %%       does it for us when first load.
@@ -2081,6 +2080,7 @@ get_and_check_model_module(ModelName) ->
             {ok, ModelModule};
         false ->
             debug_logger:log_error(
+                erlang:get_stacktrace(),
                 "There is not a module named: '~p' for model: '~p'", [ModelModule, ModelName]),
             {error, {model_without_model_module, ModelModule}}
     end.

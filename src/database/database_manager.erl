@@ -473,10 +473,12 @@ wait_for_available_connection(TimeOut, ConnectionPool) ->
 -spec connection_block_transaction(Fun) ->
     FunReply
     | {error, {invalid_backend, BackendName}}
-    | {error, no_available_connection} when
+    | {error, no_available_connection}
+    | {error, {rollback, Reason}} when
     Fun :: fun(),
     BackendName :: atom(),
-    FunReply :: any().
+    FunReply :: any(),
+    Reason :: term().
 connection_block_transaction(Fun) ->
     connection_block_transaction(Fun, []).
 
@@ -532,14 +534,16 @@ connection_block_transaction(Fun) ->
 -spec connection_block_transaction(Fun, Options) ->
     FunReply
     | {error, {invalid_backend, BackendName}}
-    | {error, no_available_connection} when
+    | {error, no_available_connection}
+    | {error, {rollback, Reason}} when
     Fun :: fun(),
     BackendName :: atom(),
     Options :: proplists:proplist(),
-    FunReply :: any().
+    FunReply :: any(),
+    Reason :: term().
 connection_block_transaction(Fun, Options) ->
     connection_block(fun(DBSession) ->
-        transaction(DBSession, Fun)
+        transaction(DBSession, fun() -> Fun(DBSession) end)
     end, Options).
 
 %% -------------------------------------------------------------------
@@ -674,7 +678,7 @@ query({Backend, Connection}, Query, Params, Options) ->
 %% -------------------------------------------------------------------
 -spec transaction(DBSession, Fun) ->
     FunReply
-    | {error, Reason} when
+    | {error, {rollback, Reason}} when
     DBSession :: db_session(),
     Fun :: fun(),
     FunReply :: any(),
@@ -1376,7 +1380,9 @@ init([]) ->
         {ok, BackendsConfig} ->
             case parse_backend_config(BackendsConfig) of
                 [] ->
-                    debug_logger:log_error("There is no database backend to use!"),
+                    debug_logger:log_error(
+                        erlang:get_stacktrace(),
+                        "There is no database backend to use!"),
                     {stop, {error, no_available_database_backend}};
                 NewBackendsConfig ->
                     %% starts a connection pool for each configured backend.
@@ -1384,7 +1390,9 @@ init([]) ->
                     {ok, #state{}}
             end;
         undefined ->
-            debug_logger:log_error("No database backend configuration was specified!"),
+            debug_logger:log_error(
+                erlang:get_stacktrace(),
+                "No database backend configuration was specified!"),
             {stop, {error, no_available_database_backend}}
     end.
 

@@ -19,7 +19,7 @@
 
 -export([
     generate_unique_id/0,
-    generate_unique_hash_id/0,
+    generate_unique_id_hash/0,
     hash_value/1,
     hash_random/1,
     hash_password/1]).
@@ -56,18 +56,20 @@
 -spec generate_unique_id() -> UniqueID when
     UniqueID :: string().
 generate_unique_id() ->
-    NowNumber = lists:concat(tuple_to_list(erlang:timestamp())),
-    RandomNumber = integer_to_list(gen_server:call(?SERVER, {random_strong_uniform, 10000000}, infinity)),
-    NowNumber ++ RandomNumber.
+    UniqueNumber = integer_to_list(erlang:unique_integer([positive])),
+    NowNumber = integer_to_list(erlang:system_time()),
+    RandomNumber = integer_to_list(
+        gen_server:call(?SERVER, {random_strong_uniform, 10000000}, infinity)),
+    NowNumber ++ RandomNumber ++ UniqueNumber.
 
 %% -------------------------------------------------------------------
 %% @doc
 %% Generates a hashed value for a generated unique ID in the system.
 %% @end
 %% -------------------------------------------------------------------
--spec generate_unique_hash_id() -> UniqueHashID when
+-spec generate_unique_id_hash() -> UniqueHashID when
     UniqueHashID :: string().
-generate_unique_hash_id() ->
+generate_unique_id_hash() ->
     hash_value(generate_unique_id()).
 
 %% -------------------------------------------------------------------
@@ -106,9 +108,9 @@ hash_random(Value) ->
     Password :: string() | binary(),
     HashedPassword :: binary().
 hash_password(Password) ->
-    %% TODO: do better implementation.
-    <<HashedRandomValue:160/integer>> = crypto:hmac(sha, ?SECRET_WORD, Password),
-    list_to_bitstring(lists:flatten(io_lib:format("~40.16.0b", [HashedRandomValue]))).
+    %% TODO: better implementation.
+    <<HashedValue:160/integer>> = crypto:hmac(sha, ?SECRET_WORD, Password),
+    list_to_bitstring(lists:flatten(io_lib:format("~40.16.0b", [HashedValue]))).
 
 %%--------------------------------------------------------------------
 %% @doc

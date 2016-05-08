@@ -1013,7 +1013,7 @@ code_change(_OldVsn, State, _Extra) ->
 create_session_internal(MapSessionDataMap, SessionExpireTime, ExpiredCallback) ->
     %% The session does not exists so create it.
     %% generates an unique session id.
-    SessionID = security_lib:generate_unique_hash_id(),
+    SessionID = security_lib:generate_unique_id_hash(),
     Session = #session{
         id = SessionID,
         session_data = MapSessionDataMap,

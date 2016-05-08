@@ -28,6 +28,7 @@ execute(Req, Env) ->
     %% ********************************************************
     %% NOTE: If in development mode tries to reload the recently
     %% changed files.
+    debug_logger:log_info_msg("*** dev_mode"),
     case ce_control:rebuild_all() of
         ok ->
             execute2(Req, Env);

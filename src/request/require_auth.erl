@@ -61,6 +61,7 @@ upgrade(Req, Env, Handler, HandlerState, infinity, run) ->
                         terminate(stop, Req3, Env, HandlerState, Handler);
                     Other2 ->
                         debug_logger:log_error(
+                            erlang:get_stacktrace(),
                             "~p:ensure_logged_in/2 is not returning a valid value:~n~p",
                             [Handler, Other2]),
                         Other2
@@ -77,6 +78,7 @@ upgrade(Req, Env, Handler, HandlerState, infinity, run) ->
             end;
         false ->
             debug_logger:log_error(
+                erlang:get_stacktrace(),
                 "request_handler: '~p.erl' does not implements ensure_logged_in/2",
                 [Handler]),
             {stop, Req}

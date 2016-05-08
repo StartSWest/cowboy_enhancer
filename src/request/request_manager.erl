@@ -123,6 +123,7 @@ execute_action(Req, Opts, Module, ParamCount, Run) when is_function(Run) ->
                                 {suspend, Module, Function, Arguments};
                             Other ->
                                 debug_logger:log_error(
+                                    erlang:get_stacktrace(),
                                     "~p:~p/~p has invalid return value:~n~p",
                                     [Module, Action, ParamCount, Other]),
                                 Other
@@ -136,6 +137,7 @@ execute_action(Req, Opts, Module, ParamCount, Run) when is_function(Run) ->
                     end;
                 false ->
                     debug_logger:log_error(
+                        erlang:get_stacktrace(),
                         "request_handler: '~p.erl' does not implements action:"
                         " ~p/~p", [Module, Action, ParamCount]),
                     {ok, Req, Opts}
