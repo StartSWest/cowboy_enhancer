@@ -73,9 +73,6 @@ start(_Type, _Args) ->
     check_dev(),
     start_verbose(10),
 
-    debug_logger:log_info_msg("*** Compilling the Sources."),
-    ce_control:rebuild_all(),
-
     observer:start(),
 
     %% Starts the supervisor.
