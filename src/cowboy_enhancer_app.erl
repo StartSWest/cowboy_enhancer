@@ -15,8 +15,8 @@ start() ->
     start_verbose(100).
 
 start_dev() ->
-    start_verbose(0),
-    observer:start().
+    start_verbose(0).
+%%     observer:start().
 
 start_verbose(VerboseTime) ->
     %% prepares code paths.

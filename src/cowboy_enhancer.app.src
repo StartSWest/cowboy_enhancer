@@ -7,7 +7,14 @@
    [kernel,
     stdlib,
 	lager,
-    cowboy
+    cowboy,
+	jsx,
+	erlydtl,
+	epgsql,
+	dh_date,
+	quickrand,
+	jwt,
+	gen_smtp
    ]},
   {env,[]},
   {modules, []},
