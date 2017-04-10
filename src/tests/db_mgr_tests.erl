@@ -22,7 +22,10 @@ test_find(N) ->
             lists:foreach(fun(_) ->
                 database_manager:find(C,
                     [roles, users],
-                    [[{{users, id}, '==', {roles, id}}, {{users, id}, '==', 1}], 'or', {{users, id}, '==', 1}],
+                    [[{{users, id}, '==', {roles, id}},
+                        {{users, id}, '==', 1}],
+                        'or',
+                        {{users, id}, '==', 1}],
                     [
                         {return_fields, [{users, id, users_id}, {roles, id, roles_id}]},
                         {limit, 2},
@@ -62,8 +65,6 @@ test_parse_fieldvalues(N) ->
             sql_builder_tools:unparse_fieldvalues(1, #{a=>1, b=>2, c=>"as", d=>4, e=>4, f=>12}, "$")
         end, lists:seq(1, N))
     end).
-
-
 
 get_postgres_operator(Operator, Type) ->
     case {Type, Operator} of
