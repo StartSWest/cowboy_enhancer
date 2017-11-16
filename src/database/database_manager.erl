@@ -12,9 +12,9 @@
 
 -behaviour(gen_server).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% API Exports
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -export([
     connect/1,
     connect/2,
@@ -37,9 +37,9 @@
     find_one/3,
     find_one/4]).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% Admin API Exports
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -export([
     install_backend/2,
     remove_backend/1,
@@ -55,9 +55,9 @@
     terminate/2,
     code_change/3]).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% MACRO Definition
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -define(SERVER, ce_database_manager).
 -define(CONNECTION_POOL_SUP_NAME, ce_connection_pool_sup).
 
@@ -67,9 +67,9 @@
 %% connection.
 -define(WAIT_FOR_REUSABLE_CONNECTION_TIMEOUT, 5000).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% TYPE Definition
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -type db_session() :: {Backend :: atom(), Connection :: any()}.
 
 -type map_result_data() :: no_data | map() | [map(), ...].
@@ -107,9 +107,9 @@
     simple_return_field_specs/0, full_return_field_specs/0, result_data/0,
     result_data_for_insert/0, order_by_expr/0, group_by_expr/0]).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% Record Definition
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -record(state, {}).
 
 -record(backend_config, {
@@ -122,7 +122,7 @@
     wait_for_reusable_connection_timeout :: timeout()
 }).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Tries to connect to a database backend. Returns a `DBSession'
 %% with information about the backend and connection.
@@ -156,7 +156,7 @@
 %% </pre>
 %% @see connect/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec connect(BackendName) ->
     {ok, DBSession}
     | {error, {invalid_backend, BackendName}}
@@ -167,7 +167,7 @@
 connect(BackendName) ->
     connect(BackendName, default_timeout).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Tries to connect to a database backend within a `Timeout'.
 %% Returns a `DBSession' with information about the backend and
@@ -205,7 +205,7 @@ connect(BackendName) ->
 %%    ]}
 %% </pre>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec connect(BackendName, Timeout) ->
     {ok, DBSession}
     | {error, {invalid_backend, BackendName}}
@@ -229,11 +229,11 @@ connect(BackendName, Timeout) ->
             Other2
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Disconnects from the specified `DBSession'.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec disconnect(DBSession) -> ok when
     DBSession :: db_session().
 disconnect({Backend, Connection}) ->
@@ -246,7 +246,7 @@ disconnect({Backend, Connection}) ->
             ok
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Tries to create a connection session with an available connection
 %% from the connection pool for the `main_backend' backend, and
@@ -286,7 +286,7 @@ disconnect({Backend, Connection}) ->
 %% </pre>
 %% @see connection_block/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec connection_block(Fun) ->
     FunReply
     | {error, {invalid_backend, BackendName}}
@@ -297,7 +297,7 @@ disconnect({Backend, Connection}) ->
 connection_block(Fun) ->
     connection_block(Fun, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Tries to create connection session with an available connection
 %% from the connection pool for the specified `BackendName' in
@@ -345,7 +345,7 @@ connection_block(Fun) ->
 %%    ]}
 %% </pre>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec connection_block(Fun, Options) ->
     FunReply
     | {error, {invalid_backend, BackendName}}
@@ -428,7 +428,7 @@ wait_for_available_connection(TimeOut, ConnectionPool) ->
         {error, no_available_connection}
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Tries to create a connection session and a database transaction
 %% context with an available connection from the connection pool for
@@ -469,7 +469,7 @@ wait_for_available_connection(TimeOut, ConnectionPool) ->
 %% </pre>
 %% @see connection_block_transaction/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec connection_block_transaction(Fun) ->
     FunReply
     | {error, {invalid_backend, BackendName}}
@@ -482,7 +482,7 @@ wait_for_available_connection(TimeOut, ConnectionPool) ->
 connection_block_transaction(Fun) ->
     connection_block_transaction(Fun, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Tries to create a connection session and a database transaction
 %% context with an available connection from the connection pool for
@@ -530,7 +530,7 @@ connection_block_transaction(Fun) ->
 %%    ]}
 %% </pre>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec connection_block_transaction(Fun, Options) ->
     FunReply
     | {error, {invalid_backend, BackendName}}
@@ -546,7 +546,7 @@ connection_block_transaction(Fun, Options) ->
         transaction(DBSession, fun() -> Fun(DBSession) end)
     end, Options).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Makes a query to a database for the specified `DBSession'.
 %%
@@ -572,7 +572,7 @@ connection_block_transaction(Fun, Options) ->
 %%   Result data will be in map format.</li></ul>
 %% @see query/4.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec query(DBSession, Query, Params) ->
     {ok, map_result_data()} |
     {ok, Count} |
@@ -587,7 +587,7 @@ query({Backend, Connection}, Query, Params) ->
     %% executes 'query/4' in the current 'Backend'..
     Backend:query(Connection, Query, Params, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Makes a query to a database for the specified `DBSession' using
 %% `Options' to extend the functionality.
@@ -644,7 +644,7 @@ query({Backend, Connection}, Query, Params) ->
 %%   If no `result_format' is specified, `map' will be the default
 %%   result format.</li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec query(DBSession, Query, Params, Options) ->
     {ok, result_data()} |
     {ok, Count} |
@@ -660,7 +660,7 @@ query({Backend, Connection}, Query, Params, Options) ->
     %% executes 'query/4' in the current 'Backend'.
     Backend:query(Connection, Query, Params, Options).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Prepares a transaction context for the specified `DBSession'.
 %%
@@ -675,7 +675,7 @@ query({Backend, Connection}, Query, Params, Options) ->
 %%   end).
 %% </pre>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec transaction(DBSession, Fun) ->
     FunReply
     | {error, {rollback, Reason}} when
@@ -687,7 +687,7 @@ transaction({Backend, Connection}, Fun) ->
     %% executes 'transaction/2' in the current 'Backend'.
     Backend:transaction(Connection, Fun).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Inserts data using a `TableSpec' into a database.
 %%
@@ -722,7 +722,7 @@ transaction({Backend, Connection}, Fun) ->
 %% </pre>
 %% @see insert/3.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec insert(DBSession, TableSpec) ->
     {ok, Count}
     | {error, Reason} when
@@ -736,7 +736,7 @@ insert({Backend, Connection}, TableSpec) ->
     %% executes 'insert/3' in the current 'Backend'.
     Backend:insert(Connection, NewTableSpec, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Inserts data using a `TableSpec' and `Options' into a database.
 %%
@@ -795,7 +795,7 @@ insert({Backend, Connection}, TableSpec) ->
 %%   If no `result_format' is specified, `map' will be the default
 %%   result format.</li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec insert(DBSession, TableSpec, Options) ->
     {ok, Count} |
     {ok, Count, result_data_for_insert()}
@@ -811,7 +811,7 @@ insert({Backend, Connection}, TableSpec, Options) ->
     %% executes 'insert/3' in the current 'Backend'.
     Backend:insert(Connection, NewTableSpec, Options).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Updates data in a database using a `TableSpec' and
 %% `MatchFieldSpecs' parameters.
@@ -868,7 +868,7 @@ insert({Backend, Connection}, TableSpec, Options) ->
 %%   '''</li></ul>
 %% @see update/4.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec update(DBSession, TableSpec, MatchFieldSpecs) ->
     {ok, Count}
     | {error, Reason} when
@@ -883,7 +883,7 @@ update({Backend, Connection}, TableSpec, MatchFieldSpecs) ->
     %% executes update/4 in the current 'Backend'.
     Backend:update(Connection, NewTableSpec, MatchFieldSpecs, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Updates data in a database using a `TableSpec', `MatchFieldSpec'
 %% and `Options', parameters.
@@ -960,7 +960,7 @@ update({Backend, Connection}, TableSpec, MatchFieldSpecs) ->
 %%    {return_fields, [{users, '*'}]}
 %%  '''</li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec update(DBSession, TableSpec, MatchFieldSpecs, Options) ->
     {ok, Count} |
     {ok, Count, result_data()}
@@ -978,7 +978,7 @@ update({Backend, Connection}, TableSpec, MatchFieldSpecs, Options) ->
     %% executes update/4 in the current 'Backend'.
     Backend:update(Connection, NewTableSpec, MatchFieldSpecs, Options).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Deletes data from a database using a `TableName' and
 %% `MatchFieldSpecs' parameters.
@@ -1015,7 +1015,7 @@ update({Backend, Connection}, TableSpec, MatchFieldSpecs, Options) ->
 %%
 %% @see delete/3.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec delete(DBSession, TableName, MatchFieldSpecs) ->
     {ok, Count}
     | {error, Reason} when
@@ -1028,7 +1028,7 @@ delete({Backend, Connection}, TableName, MatchFieldSpecs) ->
     %% executes delete/4 in the current 'Backend'.
     Backend:delete(Connection, TableName, MatchFieldSpecs, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Deletes data from a database using a `TableName', `MatchFieldSpecs'
 %% and `Options' parameters.
@@ -1081,7 +1081,7 @@ delete({Backend, Connection}, TableName, MatchFieldSpecs) ->
 %%  You will only get `result_data()' when using `return_fields'
 %%  option.</li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec delete(DBSession, TableName, MatchFieldSpecs, Options) ->
     {ok, Count} |
     {ok, Count, result_data()}
@@ -1097,7 +1097,7 @@ delete({Backend, Connection}, TableName, MatchFieldSpecs, Options) ->
     %% executes delete/4 in the current 'Backend'.
     Backend:delete(Connection, TableName, MatchFieldSpecs, Options).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Finds a single occurrence of data in a database using `TableNames'
 %% and `MatchFieldSpecs' parameters.
@@ -1108,11 +1108,11 @@ delete({Backend, Connection}, TableName, MatchFieldSpecs, Options) ->
 %% '''
 %% @see find/4.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 find_one({Backend, Connection}, TableNames, MatchFieldSpecs) ->
     find({Backend, Connection}, TableNames, MatchFieldSpecs, [{limit, 1}]).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Finds a single occurrence of data in a database using `TableNames',
 %% `MatchFieldSpecs' and `Options' parameters.
@@ -1124,11 +1124,11 @@ find_one({Backend, Connection}, TableNames, MatchFieldSpecs) ->
 %% '''
 %% @see find/4.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 find_one({Backend, Connection}, TableNames, MatchFieldSpecs, Options) ->
     find({Backend, Connection}, TableNames, MatchFieldSpecs, [{limit, 1} | Options]).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Finds data in a database using `TableNames' and `MatchFieldSpecs'
 %% parameters.
@@ -1139,12 +1139,12 @@ find_one({Backend, Connection}, TableNames, MatchFieldSpecs, Options) ->
 %% '''
 %% @see find/4.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 
 find({Backend, Connection}, TableNames, MatchFieldSpecs) ->
     find({Backend, Connection}, TableNames, MatchFieldSpecs, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Finds data in a database using `TableNames', `MatchFieldSpecs' and
 %% `Options' parameters.
@@ -1240,7 +1240,7 @@ find({Backend, Connection}, TableNames, MatchFieldSpecs) ->
 %%    {return_fields, [{users, '*'}]}
 %%  '''</li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec find(DBSession, TableNames, MatchFieldSpecs, Options) ->
     {ok, result_data()}
     | {error, {invalid_clause_option, term()}}
@@ -1259,7 +1259,7 @@ find({Backend, Connection}, TableNames, MatchFieldSpecs, Options) ->
 %%% Admin API Functions
 %%%-------------------------------------------------------------------
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Installs a new database backend and start a connection pool for it.
 %%
@@ -1280,7 +1280,7 @@ find({Backend, Connection}, TableNames, MatchFieldSpecs, Options) ->
 %%   `wait_for_reusable_connection_timeout' options, default values
 %%   will be provided.</li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec install_backend(BackendName, Options) ->
     ok
     | error
@@ -1298,7 +1298,7 @@ install_backend(BackendName, Options) ->
             error
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Removes a database backend specified by `BackendName' parameter.
 %%
@@ -1307,7 +1307,7 @@ install_backend(BackendName, Options) ->
 %%   ok = remove_backend(my_backend).
 %% </pre>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec remove_backend(BackendName) ->
     ok
     | {error, {invalid_backend, BackendName}}
@@ -1323,7 +1323,7 @@ remove_backend(BackendName) ->
             supervisor:terminate_child(?CONNECTION_POOL_SUP_NAME, Pid)
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Updates a backend configuration.
 %%
@@ -1339,7 +1339,7 @@ remove_backend(BackendName) ->
 %%            {wait_for_reusable_connection_timeout, 5000}]).
 %% </pre>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec update_backend_options(BackendName, NewOptions) ->
     ok
     | {error, {invalid_backend, BackendName}}
@@ -1420,12 +1420,12 @@ code_change(_OldVsn, State, _Extra) ->
 %%% Internal Functions
 %%%===================================================================
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Gets a list well configured backends.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec parse_backend_config(ListOfBackends) ->
     [BackendMap, ...] | [] when
     ListOfBackends :: proplists:proplist(),
@@ -1504,12 +1504,12 @@ connection_pool_starter(BackendsConfig) ->
         end, length(BackendsConfig), BackendsConfig),
     {ok, C}.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Gets a working connection pool name for the specified 'Backend'.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec check_backend_connection_pool(BackendName) ->
     {ok, ConnectionPool}
     | {error, invalid_backend} when
@@ -1527,7 +1527,7 @@ check_backend_connection_pool(BackendName) ->
 make_connection_pool_name(BackendName) ->
     list_to_atom("ce_" ++ atom_to_list(BackendName) ++ "_connection_pool").
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Gets a `NewTableSpec' with valued re-assigned. i.e. for:
@@ -1541,7 +1541,7 @@ make_connection_pool_name(BackendName) ->
 %%       password = "server",
 %%       old_password = "server"}}.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec parse_table_spec(TableSpec) ->
     NewTableSpec when
     TableSpec :: table_spec(),

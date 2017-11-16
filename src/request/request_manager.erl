@@ -9,9 +9,9 @@
 -module(request_manager).
 -author("Ivan Carmenates Garcia").
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% API Exports
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -export([
     handle_req/3,
     handle_req/4,
@@ -21,7 +21,7 @@
 %%% API Functions
 %%%-------------------------------------------------------------------
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Parses the requested url params into a map().
 %% NOTE:
@@ -38,7 +38,7 @@
 %% NOTE: 'undefined' will be returned for the value of the param names
 %%       that doesn't exists in the request url.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec map_request_params(ParamNames, Req) -> map() | undefined when
     ParamNames :: [atom(), ...],
     Req :: cowboy_req:req().
@@ -49,12 +49,12 @@ map_request_params([], _) ->
 map_request_params(_, _) ->
     exit({badarg, "function map_request_params/2 called with invalid 'ParamNames' argument"}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Routes the client's requests to the specific actions defined
 %% in 'Opts'.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec handle_req(Module, Req, Opts) ->
     {ok, Req2, Opts2} | {stop, Req2} | {suspend, Module2, Function, Arguments} when
     Module :: atom(),
@@ -75,7 +75,7 @@ handle_req(Module, Req, Opts) ->
 %% Routes the client's authenticated requests to the specific actions
 %% defined in 'Opts'.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec handle_req(Module, Req, Opts, SessionID) ->
     {ok, Req2, Opts2} | {stop, Req2} | {suspend, Module2, Function, Arguments} when
     Module :: atom(),
@@ -92,9 +92,9 @@ handle_req(Module, Req, Opts, SessionID) ->
         Module:Action(Method, Req, Opts, SessionID)
     end).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% Internal Functions
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 
 %% tries to execute an action defined in 'Opts' for the module in 'Module'.
 execute_action(Req, Opts, Module, ParamCount, Run) when is_function(Run) ->

@@ -12,9 +12,9 @@
 
 -behaviour(gen_server).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% API Exports
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -export([
     start_link/0]).
 
@@ -59,9 +59,9 @@
     terminate/2,
     code_change/3]).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% MACRO Definition
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -define(SERVER, ce_session_manager).
 -define(GARBAGE_COLLECTOR_NAME, ce_session_garbage_collector).
 
@@ -76,9 +76,9 @@
 %% If you want to modify the value use 'app.config' file.
 -define(GARBAGE_COLLECTOR_FREQUENCY, timer:hours(1)).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% RECORD Definition
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -record(state, {
     gc_freq = ?GARBAGE_COLLECTOR_FREQUENCY :: integer(),
     session_exp_time = ?SESSION_EXPIRE_TIME :: integer()
@@ -91,9 +91,9 @@
     expired_callback = undefined :: fun()
 }).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% TYPE Definition and Export
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -type session_id() :: binary().
 -type session_data_proplist() :: proplists:proplist().
 -type session_data_map() :: map().
@@ -111,7 +111,7 @@
 %%% API Functions
 %%%-------------------------------------------------------------------
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Creates a session with a generated unique id and an empty data.
 %%
@@ -122,7 +122,7 @@
 %% @see create_session/2.
 %% @see create_session/3.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec create_session() ->
     {ok, SessionID} when
     SessionID :: session_id().
@@ -130,7 +130,7 @@ create_session() ->
     gen_server:call(?SERVER,
         {create_session, #{}, undefined}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Creates a session with a generated unique id and a specified
 %% `SessionDataMap' in map format.
@@ -143,7 +143,7 @@ create_session() ->
 %% @see create_session/2.
 %% @see create_session/3.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec create_session(SessionDataMap) ->
     {ok, SessionID} when
     SessionDataMap :: map(),
@@ -152,7 +152,7 @@ create_session(SessionDataMap) when is_map(SessionDataMap) ->
     gen_server:call(?SERVER,
         {create_session, SessionDataMap, undefined}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Creates a session with a generated unique id and a specified
 %% `SessionDataMap' in map format using the expired callback option.
@@ -181,7 +181,7 @@ create_session(SessionDataMap) when is_map(SessionDataMap) ->
 %% </pre>
 %% @see config_manager:session_manager_config/0.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec create_session(SessionDataMap, ExpiredCallback) ->
     {ok, SessionID} when
     SessionDataMap :: map(),
@@ -192,7 +192,7 @@ create_session(SessionDataMap, ExpiredCallback)
     gen_server:call(?SERVER,
         {create_session, SessionDataMap, ExpiredCallback}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Adds new data in map format to the session data of a session
 %% represented by a `SessionID' argument.
@@ -213,7 +213,7 @@ create_session(SessionDataMap, ExpiredCallback)
 %% </ul>
 %% @see add_session_data_value/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec add_session_data(SessionID, NewSessionDataMap) ->
     ok | {error, no_session} | {error, {already_exist_data, map()}} when
     SessionID :: session_id(),
@@ -222,7 +222,7 @@ add_session_data(SessionID, NewSessionDataMap) when is_map(NewSessionDataMap) ->
     gen_server:call(?SERVER,
         {add_session_data, SessionID, NewSessionDataMap}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Adds a `{Key, Value}' pair of data to the session data of a session
 %% represented by a `SessionID' argument.
@@ -243,7 +243,7 @@ add_session_data(SessionID, NewSessionDataMap) when is_map(NewSessionDataMap) ->
 %% </ul>
 %% @see add_session_data/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec add_session_data_value(SessionID, {Key, Value}) ->
     ok | {error, no_session} | {error, {already_exist_data, ExistingDataMap :: map()}} when
     SessionID :: session_id(),
@@ -253,7 +253,7 @@ add_session_data_value(SessionID, {Key, Value}) when is_atom(Key) ->
     gen_server:call(?SERVER,
         {add_session_data, SessionID, maps:from_list([{Key, Value}])}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Updates the session data of a session represented by a `SessionID'
 %% argument.
@@ -272,7 +272,7 @@ add_session_data_value(SessionID, {Key, Value}) when is_atom(Key) ->
 %%  use `update_session_data_wrt/2' function.</li></ul>
 %% @see update_session_data_wrt/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec update_session_data(SessionID, NewSessionDataMap) ->
     ok | {error, no_session} when
     SessionID :: session_id(),
@@ -281,7 +281,7 @@ update_session_data(SessionID, NewSessionDataMap) when is_map(NewSessionDataMap)
     gen_server:call(?SERVER,
         {update_session_data, SessionID, NewSessionDataMap, refresh}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Updates the session data of a session represented by a `SessionID'
 %% argument without resetting the expiration time of the session.
@@ -301,7 +301,7 @@ update_session_data(SessionID, NewSessionDataMap) when is_map(NewSessionDataMap)
 %%  `update_session_data/2'.</li></ul>
 %% @see update_session_data/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec update_session_data_wrt(SessionID, NewSessionDataMap) ->
     ok | {error, no_session} when
     SessionID :: session_id(),
@@ -310,7 +310,7 @@ update_session_data_wrt(SessionID, NewSessionDataMap) when is_map(NewSessionData
     gen_server:call(?SERVER,
         {update_session_data, SessionID, NewSessionDataMap, no_refresh}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Refreshes the session expiration time of a session represented by
 %% a `SessionID' argument.
@@ -320,7 +320,7 @@ update_session_data_wrt(SessionID, NewSessionDataMap) when is_map(NewSessionData
 %%   update_session_data(SessionID, #{}).
 %% '''
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec refresh_session_exp_time(SessionID) ->
     ok | {error, no_session} when
     SessionID :: session_id().
@@ -328,7 +328,7 @@ refresh_session_exp_time(SessionID) ->
     gen_server:call(?SERVER,
         {refresh_session_exp_time, SessionID, default}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Refreshes the session expiration time of a session represented by
 %% a `SessionID' argument by a given `ExpTime' in milliseconds.
@@ -343,7 +343,7 @@ refresh_session_exp_time(SessionID) ->
 %%  `app.config' file under the `session_manager' tag will be used.
 %% </li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec refresh_session_exp_time(SessionID, ExpTime) ->
     ok | {error, no_session} when
     SessionID :: session_id(),
@@ -352,7 +352,7 @@ refresh_session_exp_time(SessionID, ExpTime) ->
     gen_server:call(?SERVER,
         {refresh_session_exp_time, SessionID, ExpTime}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Gets the entire session object as a map by a `SessionID' argument.
 %%
@@ -379,7 +379,7 @@ refresh_session_exp_time(SessionID, ExpTime) ->
 %% @see get_session_data/1.
 %% @see get_session_data/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_session(SessionID) ->
     {ok, Session} | {error, no_session} when
     SessionID :: session_id(),
@@ -388,7 +388,7 @@ get_session(SessionID) ->
     gen_server:call(?SERVER,
         {get_session, SessionID, [{result_format, map}]}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Gets the entire session object by a `SessionID' argument.
 %%
@@ -414,7 +414,7 @@ get_session(SessionID) ->
 %% @see get_session_data/1.
 %% @see get_session_data/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_session(SessionID, Options) ->
     {ok, Session} | {error, no_session} when
     SessionID :: session_id(),
@@ -424,7 +424,7 @@ get_session(SessionID, Options) ->
     gen_server:call(?SERVER,
         {get_session, SessionID, Options}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Gets all values of the session data by a `SessionID' argument as
 %% a map.
@@ -439,7 +439,7 @@ get_session(SessionID, Options) ->
 %% </li></ul>
 %% @see get_session_data/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_session_data(SessionID) ->
     {ok, SessionDataMap | no_data} | {error, no_session} when
     SessionID :: session_id(),
@@ -448,7 +448,7 @@ get_session_data(SessionID) ->
     gen_server:call(?SERVER,
         {get_session_data, SessionID, {result_format, map}}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Gets all values of the session data by a `SessionID' argument.
 %%
@@ -465,7 +465,7 @@ get_session_data(SessionID) ->
 %%  and `result_format' option is `map', or could be `[]' if is
 %%  `proplist'.</li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_session_data(SessionID, Options) ->
     {ok, SessionData | no_data | []} | {error, no_session} when
     SessionID :: session_id(),
@@ -475,7 +475,7 @@ get_session_data(SessionID, Options) ->
     gen_server:call(?SERVER,
         {get_session_data, SessionID, Options}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Gets a specific value of the session data by a `SessionID' and
 %% a `Key' argument.
@@ -485,7 +485,7 @@ get_session_data(SessionID, Options) ->
 %%   get_session_data_value(SessionID, age).
 %% </pre>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_session_data_value(SessionID, Key) ->
     {ok, Data | undefined} | {error, no_session} when
     SessionID :: session_id(),
@@ -495,13 +495,13 @@ get_session_data_value(SessionID, Key) ->
     gen_server:call(?SERVER,
         {get_session_data_value, SessionID, Key}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Checks whether a session exists or if is expired by its
 %% `SessionID'. Also forces garbage collection on the session if is
 %% already expired.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec check_session(SessionID) ->
     ok | {error, no_session} | {error, session_expired} when
     SessionID :: session_id().
@@ -524,7 +524,7 @@ check_session(SessionID) ->
             Other
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Does the same of `check_session/1' but also refreshes the
 %% expiration countdown of the session.
@@ -540,7 +540,7 @@ check_session(SessionID) ->
 %%  session will not expire while this function is called.</li></ul>
 %% @see check_session/1.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec ensure_session(SessionID) ->
     ok | {error, no_session} | {error, session_expired} when
     SessionID :: session_id().
@@ -558,7 +558,7 @@ ensure_session(SessionID) ->
             Other
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Removes data from the session data of a session represented by
 %% `SessionID' and using a `Keys' key list argument.
@@ -575,7 +575,7 @@ ensure_session(SessionID) ->
 %%  You can use `refresh_session_expiration_time/1' after removing all
 %%  data to reset session expiration time countdown.</li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec delete_session_data(SessionID, Keys) ->
     ok | {error, no_session} when
     SessionID :: session_id(),
@@ -584,11 +584,11 @@ delete_session_data(SessionID, [K | _] = Keys) when is_atom(K), is_list(Keys) ->
     gen_server:call(?SERVER,
         {delete_session_data, SessionID, Keys}, infinity).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Deletes a session represented by a `SessionID' argument.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec delete_session(SessionID) ->
     ok | {error, no_session} when
     SessionID :: session_id().
@@ -615,7 +615,7 @@ clean_expired_sessions() ->
             end, ExpiredSessions)
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Does the expiration process of a session usually an expired one
 %% by its `SessionID' executing its expiration callback and deleting
@@ -635,7 +635,7 @@ clean_expired_sessions() ->
 %%  `any()' any other value will cause the session to be expired and
 %%  deleted.</li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec expire_session(SessionID) ->
     ok | {error, no_session} when
     SessionID :: session_id().
@@ -647,7 +647,7 @@ expire_session(SessionID) ->
             Other
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Retrieves all sessions that contains a specific session data map
 %% information.
@@ -672,7 +672,7 @@ expire_session(SessionID) ->
 %% '''
 %% </li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec select_sessions(SessionDataMapSpec) ->
     {ok, [Session, ...]} | {error, no_session} when
     Session :: session_map(),
@@ -681,7 +681,7 @@ select_sessions(SessionDataMapSpec) ->
     gen_server:call(?SERVER,
         {select_sessions, SessionDataMapSpec, [{result_format, map}]}, infinity).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Retrieves all sessions that contains a specific session data map
 %% information using `Options'.
@@ -708,7 +708,7 @@ select_sessions(SessionDataMapSpec) ->
 %%  `result_format' rule.
 %% </li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec select_sessions(SessionDataMapSpec, Options) ->
     {ok, [Session, ...]} | {error, no_session} | {error, Other} when
     SessionDataMapSpec :: map(),
@@ -994,9 +994,9 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% Internal functions
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 
 %%--------------------------------------------------------------------
 %% @private
@@ -1245,9 +1245,9 @@ record_to_proplist(Record) ->
         {expired_callback, Record#session.expired_callback}
     ].
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% Garbage Collector functions
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 
 %% @private
 start_garbage_collector(GCFreq) ->

@@ -60,7 +60,7 @@
 %%%-------------------------------------------------------------------
 -define(DBSessionKeyDict, ce_model_manager_dbsession).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Creates a new model using a map as data-in and tries to validate
 %% it using `always' default validation tag.
@@ -106,7 +106,7 @@
 %% @see store_model/1.
 %% @see store_model/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec new_model(ModelName, ModelDataMap) ->
     {ok, model_info()}
     | {error, {model_without_model_module, ModelModule}}
@@ -120,7 +120,7 @@
 new_model(ModelName, ModelDataMap) ->
     new_model(ModelName, ModelDataMap, [{vtags, []}]).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Creates a new model using a map as data-in and tries to validate
 %% it using more than one validation tag defined in
@@ -190,7 +190,7 @@ new_model(ModelName, ModelDataMap) ->
 %% @see store_model/1.
 %% @see store_model/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec new_model(ModelName, ModelDataMap, {vtags, ValidationTags}) ->
     {ok, model_info()}
     | {error, {model_without_model_module, ModelModule}}
@@ -211,7 +211,7 @@ new_model(ModelName, ModelDataMap, [{vtags, ValidationTags}]) ->
             {ok, {ModelModule, ModelName, ModelDataMap, id, new}}
         end).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Updates a model using an `Id' and a map as data-in to update and
 %% tries to validate it using `always' default validation tag.
@@ -257,7 +257,7 @@ new_model(ModelName, ModelDataMap, [{vtags, ValidationTags}]) ->
 %% @see store_model/1.
 %% @see store_model/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec update_model_by_id(ModelName, Id, ModelDataMap) ->
     {ok, NewModelInfo}
     | {error, {model_without_model_module, ModelModule}}
@@ -273,7 +273,7 @@ new_model(ModelName, ModelDataMap, [{vtags, ValidationTags}]) ->
 update_model_by_id(ModelName, Id, ModelDataMap) ->
     update_model_by_id(ModelName, Id, ModelDataMap, [{vtags, []}]).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Updates a model using an `Id' and a map as data-in to update and
 %% tries to validate it using more than one validation tag defined
@@ -343,7 +343,7 @@ update_model_by_id(ModelName, Id, ModelDataMap) ->
 %% @see store_model/1.
 %% @see store_model/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec update_model_by_id(ModelName, Id, ModelDataMap, {vtags, ValidationTags}) ->
     {ok, model_info()}
     | {error, {model_without_model_module, ModelModule}}
@@ -371,7 +371,7 @@ update_model_by_id(ModelName, Id, ModelDataMap, [{vtags, ValidationTags}]) ->
                 {match_field_specs, MatchFieldSpecs}, update}}
         end).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Updates a model using a `MatchFieldSpecs' and a map as data-in to
 %% update, and tries to validate it using `always' default validation
@@ -425,7 +425,7 @@ update_model_by_id(ModelName, Id, ModelDataMap, [{vtags, ValidationTags}]) ->
 %% @see store_model/2.
 %% @see database_manager:update/4.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec update_model(ModelName, MatchFieldSpecs, ModelDataMap) ->
     {ok, model_info()}
     | {error, {model_without_model_module, ModelModule}}
@@ -440,7 +440,7 @@ update_model_by_id(ModelName, Id, ModelDataMap, [{vtags, ValidationTags}]) ->
 update_model(ModelName, MatchFieldSpecs, ModelDataMap) ->
     update_model(ModelName, MatchFieldSpecs, ModelDataMap, {vtags, []}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Updates a model using a `MatchFieldSpecs' and a map as data in to
 %% update, and tries to validate it using more than one validation
@@ -517,7 +517,7 @@ update_model(ModelName, MatchFieldSpecs, ModelDataMap) ->
 %% @see store_model/2.
 %% @see database_manager:update/4.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec update_model(ModelName, MatchFieldSpecs, ModelDataMap, {vtags, ValidationTags}) ->
     {ok, model_info()}
     | {error, {model_without_model_module, ModelModule}}
@@ -539,7 +539,7 @@ update_model(ModelName, MatchFieldSpecs, ModelDataMap, {vtags, ValidationTags}) 
                 {match_field_specs, MatchFieldSpecs}, update}}
         end).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Gets a single occurrence of a model represented by its `ID', for
 %% the `main_backend' database backend with a default time out.
@@ -566,7 +566,7 @@ update_model(ModelName, MatchFieldSpecs, ModelDataMap, {vtags, ValidationTags}) 
 %% @see store_block/1.
 %% @see store_block/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_model_by_id(ModelName, ID) ->
     {ok, ModelDataMap}
     | {error, {model_without_model_module, ModelModule}}
@@ -580,7 +580,7 @@ update_model(ModelName, MatchFieldSpecs, ModelDataMap, {vtags, ValidationTags}) 
 get_model_by_id(ModelName, ID) ->
     get_model_by_id(ModelName, ID, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Gets a single occurrence a model represented by its `ID' using
 %% `Options' to specify the database backend or connection timeout,
@@ -627,7 +627,7 @@ get_model_by_id(ModelName, ID) ->
 %% @see store_block/1.
 %% @see store_block/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_model_by_id(ModelName, ID, Options) ->
     {ok, ModelData}
     | {error, {model_without_model_module, ModelModule}}
@@ -656,7 +656,7 @@ get_model_by_id(ModelName, ID, Options) ->
             Error
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Gets a single occurrence of a model that match with
 %% `MatchFieldSpecs' parameter from the `main_backend' database
@@ -684,7 +684,7 @@ get_model_by_id(ModelName, ID, Options) ->
 %% @see select_models/2.
 %% @see select_models/3.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_model(ModelName, MatchFieldSpecs) ->
     {ok, ModelDataMap}
     | {error, {model_without_model_module, ModelModule}}
@@ -700,7 +700,7 @@ get_model_by_id(ModelName, ID, Options) ->
 get_model(ModelName, MatchFieldSpecs) ->
     get_model(ModelName, MatchFieldSpecs, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Gets one or many occurrences of a model that match with
 %% `MatchFieldSpecs' parameter using `Options' to specify the
@@ -750,7 +750,7 @@ get_model(ModelName, MatchFieldSpecs) ->
 %% @see select_models/2.
 %% @see select_models/3.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_model(ModelName, MatchFieldSpecs, Options) ->
     {ok, ModelData | [ModelData | MoreModelsData]}
     | {error, {model_without_model_module, ModelModule}}
@@ -768,7 +768,7 @@ get_model(ModelName, MatchFieldSpecs) ->
 get_model(ModelName, MatchFieldSpecs, Options) ->
     select_models(ModelName, MatchFieldSpecs, [{limit, 1} | Options]).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Retrieves one or more occurrences of a model that match with
 %% `MatchFieldSpecs' parameter from the `main_backend' database
@@ -795,7 +795,7 @@ get_model(ModelName, MatchFieldSpecs, Options) ->
 %% @see store_block/1.
 %% @see store_block/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec select_models(ModelName, MatchFieldSpecs) ->
     {ok, ModelDataMap | [ModelDataMap | MoreModels]}
     | {error, {model_without_model_module, ModelModule}}
@@ -812,7 +812,7 @@ get_model(ModelName, MatchFieldSpecs, Options) ->
 select_models(ModelName, MatchFieldSpecs) ->
     select_models(ModelName, MatchFieldSpecs, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Retrieves one or many occurrences of a model that match with
 %% `MatchFieldSpecs' parameter using `Options' to specify the
@@ -861,7 +861,7 @@ select_models(ModelName, MatchFieldSpecs) ->
 %% @see store_block/2.
 %% @see database_manager:find/4.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec select_models(ModelName, MatchFieldSpecs, Options) ->
     {ok, ModelData | [ModelData | MoreModelsData]}
     | {error, {model_without_model_module, ModelModule}}
@@ -884,7 +884,7 @@ select_models(ModelName, MatchFieldSpecs, Options) ->
             Error
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Deletes a model represented by its `ID' from the `main_backend'
 %% database backend.
@@ -906,7 +906,7 @@ select_models(ModelName, MatchFieldSpecs, Options) ->
 %% @see store_block/1.
 %% @see store_block/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec delete_model_by_id(ModelName, ID) ->
     ok |
     {ok, {count, Count}}
@@ -921,7 +921,7 @@ select_models(ModelName, MatchFieldSpecs, Options) ->
 delete_model_by_id(ModelName, ID) ->
     delete_model_by_id(ModelName, ID, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Deletes a model represented by its `ID', using `Options' to specify
 %% the database backend, connection timeout and other options.
@@ -968,7 +968,7 @@ delete_model_by_id(ModelName, ID) ->
 %% @see store_block/1.
 %% @see store_block/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec delete_model_by_id(ModelName, ID, Options) ->
     ok |
     {ok, DeletedModelData | ID} |
@@ -995,7 +995,7 @@ delete_model_by_id(ModelName, ID, Options) ->
             Error
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Deletes one or many models that match with `MatchFieldSpecs' from
 %% the `main_backend' database backend.
@@ -1020,7 +1020,7 @@ delete_model_by_id(ModelName, ID, Options) ->
 %% @see store_block/2.
 %% @see database_manager:delete/4.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec delete_model(ModelName, MatchFieldSpecs) ->
     ok |
     {ok, {count, Count}}
@@ -1037,7 +1037,7 @@ delete_model_by_id(ModelName, ID, Options) ->
 delete_model(ModelName, MatchFieldSpecs) ->
     delete_model(ModelName, MatchFieldSpecs, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Deletes one or many models that match with `MatchFieldSpecs' using
 %% `Options' to specify the database backend, connection timeout and
@@ -1084,7 +1084,7 @@ delete_model(ModelName, MatchFieldSpecs) ->
 %% @see store_block/2.
 %% @see database_manager:delete/4.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec delete_model(ModelName, MatchFieldSpecs, Options) ->
     ok |
     {ok, DeletedModelData | ID} |
@@ -1119,7 +1119,7 @@ delete_model(ModelName, MatchFieldSpecs, Options) ->
             Error
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Stores a model using `ModelInfo' into the main_backend database.
 %%
@@ -1153,7 +1153,7 @@ delete_model(ModelName, MatchFieldSpecs, Options) ->
 %% @see store_block/1.
 %% @see store_block/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec store_model(ModelInfo) ->
     ok |
     {ok, {count, Count}}
@@ -1164,7 +1164,7 @@ delete_model(ModelName, MatchFieldSpecs, Options) ->
 store_model(ModelInfo) ->
     store_model(ModelInfo, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Stores a model using `ModelInfo' into the database backend
 %% specified in `Options'.
@@ -1251,7 +1251,7 @@ store_model(ModelInfo) ->
 %% @see store_block/2.
 %% @see database_manager:update/4.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec store_model(ModelInfo, Options) ->
     ok |
     {ok, FieldData| ID} |
@@ -1274,7 +1274,7 @@ store_model(ModelInfo, Options) ->
         internal_store_model(DBSession, ModelInfo, Options)
     end, Options).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Does a custom operation with a model and tries to validate it.
 %% You can use more than one validation tag defined in
@@ -1305,7 +1305,7 @@ store_model(ModelInfo, Options) ->
 %% </pre>
 %% NOTE: `always' validation tag will be always used if exist.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec query_model(ModelName, ModelDataMap, {vtags, ValidationTags}, Fun) ->
     FunResult
     | {error, {model_without_model_module, ModelModule}}
@@ -1322,7 +1322,7 @@ store_model(ModelInfo, Options) ->
 query_model(ModelName, ModelDataMap, {vtags, ValidationTags}, Fun) ->
     internal_query_model(ModelName, ModelDataMap, ValidationTags, Fun).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Creates a store block for the database `main_backend' with a
 %% default timeout to improve performance when using multiple
@@ -1383,7 +1383,7 @@ query_model(ModelName, ModelDataMap, {vtags, ValidationTags}, Fun) ->
 %% @see database_manager:connection_block/1.
 %% @see database_manager:connection_block/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec store_block(Fun) ->
     any()
     | {error, no_available_connection}
@@ -1393,7 +1393,7 @@ query_model(ModelName, ModelDataMap, {vtags, ValidationTags}, Fun) ->
 store_block(Fun) ->
     internal_db_session(Fun, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Creates a store block to improve performance when using multiple
 %% consecutive `store_model' and `database_manager' operations, also
@@ -1463,7 +1463,7 @@ store_block(Fun) ->
 %%  the first one creates the session and the others reuses it.
 %% </li></ul>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec store_block(Fun, Options) ->
     any()
     | {error, {invalid_backend, BackendName}}
@@ -1476,7 +1476,7 @@ store_block(Fun) ->
 store_block(Fun, Options) ->
     internal_db_session(Fun, Options).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Creates a store block for the database `main_backend' with a
 %% default connection timeout to improve performance when using
@@ -1531,7 +1531,7 @@ store_block(Fun, Options) ->
 %% @see database_manager:connection_block_transaction/1.
 %% @see database_manager:connection_block_transaction/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec store_block_transaction(Fun) ->
     any()
     | {error, no_available_connection}
@@ -1543,7 +1543,7 @@ store_block(Fun, Options) ->
 store_block_transaction(Fun) ->
     store_block_transaction(Fun, []).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Creates a store block for a custom database backend and timeout
 %% specified in `Options' to improve performance when using multiple
@@ -1590,7 +1590,7 @@ store_block_transaction(Fun) ->
 %% @see database_manager:connection_block_transaction/1.
 %% @see database_manager:connection_block_transaction/2.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec store_block_transaction(Fun, Options) ->
     any()
     | {error, {invalid_backend, BackendName}}
@@ -1606,23 +1606,23 @@ store_block_transaction(Fun, Options) ->
         database_manager:transaction(DBSession, fun() -> Fun(DBSession) end)
     end, Options).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Gets the current database connection session created by
 %% `store_block/1/2' function.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_current_db_session() -> DBSession | undefined when
     DBSession :: database_manager:db_session().
 get_current_db_session() ->
     erlang:get(?DBSessionKeyDict).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Executes 'validation_tests/1' function in 'ModelModule' if exists.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec exec_validation_tests(ModelModule, ModelDataMap, ValidationTags) ->
     ok
     | {error, {validation_error, Errors}} when
@@ -1645,12 +1645,12 @@ exec_validation_tests(ModelModule, ModelDataMap, ValidationTags) ->
             ok
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Does the model data validation.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec do_validation(ValidationTags, FullValidationTests) ->
     ok
     | {error, ErrorMessages} when
@@ -1687,13 +1687,13 @@ do_validation(ValidationTags, FullValidationTests) ->
             {error, Messages}
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Converts a full validation tests list into a filtered list of
 %% simple validation tests.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec filter_validation_tests_by_tags(ValidationTags, FullValidationTests) ->
     [simple_validation_test()] when
     ValidationTags :: atom(),
@@ -1712,12 +1712,12 @@ filter_validation_tests_by_tags(ValidationTags, FullValidationTests) ->
     %% joins all filtered lists of tests into one list.
     lists:merge(LOFT).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Executes 'after_validate/1' function in 'ModelModule' if exists.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec exec_after_validate(ModelModule, ModelDataMap) ->
     ok
     | {error, Error} when
@@ -1734,7 +1734,7 @@ exec_after_validate(ModelModule, ModelDataMap) ->
             ok
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Query model does new, update or any other custom behavior taking
@@ -1743,7 +1743,7 @@ exec_after_validate(ModelModule, ModelDataMap) ->
 %% NOTE: function in 'Fun' must return either of '{ok, any()}' or
 %%       '{error, term()}'.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec internal_query_model(ModelName, ModelDataMap, ValidationTags, Fun) ->
     FunResult
     | {error, {model_without_model_module, ModelModule}}
@@ -1787,7 +1787,7 @@ internal_query_model(ModelName, ModelDataMap, ValidationTags, Fun) ->
             Error
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Inserts or updates a model into a database.
@@ -1795,7 +1795,7 @@ internal_query_model(ModelName, ModelDataMap, ValidationTags, Fun) ->
 %% Returns the model id or specified fields if 'Options' contains
 %% 'return_id' or '{return_fields, FieldNames}'.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec internal_store_model(DBSession, ModelInfo, Options) ->
     ok |
     {ok, FieldData | ID} |
@@ -1833,13 +1833,13 @@ internal_store_model(DBSession, ModelInfo, Options) ->
                 ModelName, ModelDataMap, IdOrMatchFieldSpec, ReturnId, Options)
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Inserts a model into the database.
 %%
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec internal_insert(DBSession, ModelName, ModelDataMap, ReturnId, Options) ->
     ok |
     {ok, FieldData | ID} |
@@ -1868,12 +1868,12 @@ internal_insert(DBSession, ModelName, ModelDataMap, ReturnId, Options) ->
     R = database_manager:insert(DBSession, {ModelName, ModelDataMap}, NewOptions),
     process_reply(R, {no_action_message, nothing_to_insert}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Updates a model in the database.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec internal_update(
     DBSession, ModelName, ModelDataMap, MatchFieldSpecs, ReturnId, ReturnFields) ->
     ok |
@@ -1906,12 +1906,12 @@ internal_update(DBSession, ModelName, ModelDataMap,
         MatchFieldSpecs, NewOptions),
     process_reply(R, {no_action_message, nothing_to_update}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Deletes a model in the database.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec internal_delete(ModelName, MatchFieldSpecs, ReturnId, Options) ->
     ok |
     {ok, FieldData | ID} |
@@ -1962,12 +1962,12 @@ internal_select(ModelName, ModelModule, MatchFieldSpecs, Options) ->
         process_reply(R, {no_action_message, none})
     end, Options).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Processes the result value of an insert and an update.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% ok |
 %% {ok, FieldData | ID} |
 %% {ok, {count, Count}} |
@@ -1991,7 +1991,7 @@ process_reply(R, {no_action_message, NoActionMessage}) ->
             Other
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Creates or reuses an db session.
@@ -2000,7 +2000,7 @@ process_reply(R, {no_action_message, NoActionMessage}) ->
 %%     ...
 %%   end, [{backend, main_backend}, {timeout, infinity}]).
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec internal_db_session(Fun, Options) ->
     FunReply
     | {error, {invalid_backend, BackendName}}
@@ -2034,14 +2034,14 @@ internal_db_session(Fun, Options) ->
             Fun(DBSession)
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Retrieves the id field name from the model.
 %% NOTE: this function must be called with 'Model' module already
 %%       loaded.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 get_model_id_field_name(Model) ->
     case erlang:function_exported(Model, id_field_name, 0) of
         true ->
@@ -2050,24 +2050,24 @@ get_model_id_field_name(Model) ->
             id
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Gets the model module for a model which is the model name with
 %% '_model' added. i.e.: users -> users_model.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_model_module(ModelName :: atom()) -> ModelModule :: atom().
 get_model_module(ModelName) ->
     %% gets the model module by adding '_model' to 'ModelName'.
     list_to_atom(atom_to_list(ModelName) ++ "_model").
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% gets also checks if there is a model module for a model.
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_and_check_model_module(ModelName) ->
     {ok, ModelModule}
     | {error, {model_without_model_module, ModelModule}} when
