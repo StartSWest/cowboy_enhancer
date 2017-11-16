@@ -20,7 +20,7 @@ start_dev() ->
 
 start_verbose(VerboseTime) ->
     %% prepares code paths.
-    %%prepare_code(VerboseTime),
+    prepare_code(VerboseTime),
 
     verbose_log(1, "~nStarting 'cowboy_enhancer' framework...~n"),
     %% starts the framework.
@@ -71,9 +71,9 @@ check_dev() ->
 
 start(_Type, _Args) ->
     check_dev(),
-    start_verbose(10),
+    %start_verbose(10),
 
-    observer:start(),
+    %observer:start(),
 
     %% Starts the supervisor.
     cowboy_enhancer_sup:start_link().

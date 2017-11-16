@@ -1,11 +1,11 @@
-%%%-------------------------------------------------------------------
-%%% @author Ivan Carmenates Garcia
-%%% @copyright (C) 2016, Ivanco Software Corporation
-%%% @doc
-%%% Config manager to retrieve application set of configurations.
-%%% @end
-%%% Created : 20. dic 2015 01:15 PM
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------
+%% @author Ivan Carmenates Garcia
+%% @copyright (C) 2016, Ivanco Software Corporation
+%% @doc
+%% Config manager to retrieve application set of configurations.
+%% @end
+%% Created : 20. dic 2015 01:15 PM
+%%-------------------------------------------------------------------
 -module(config_manager).
 -author("Ivan Carmenates Garcia").
 
@@ -13,13 +13,13 @@
 
 %% API Export
 -export([
-    database_manager_config/0,
-    session_manager_config/0,
-    target_app/0,
+  database_manager_config/0,
+  session_manager_config/0,
+  target_app/0,
 	get_templates_dir/0,
 	get_target_app_ebin_and_src/0,
 	system_start_verbose_level/0,
-    change_session_manager_config/1]).
+  change_session_manager_config/1]).
 
 %% -------------------------------------------------------------------
 %% @doc
@@ -129,30 +129,48 @@ system_start_verbose_level() ->
 target_app() ->
     application:get_env(?ROOT_CONFIG_NAME, target_app).
 
+%% -------------------------------------------------------------------
+%% @doc
+%% Gets templates directory.
+%% @end
+%% -------------------------------------------------------------------
 get_templates_dir() ->	
 	application:get_env(?ROOT_CONFIG_NAME, templates_dir).
 
+%% -------------------------------------------------------------------
+%% @doc
+%% Gets target app directory.
+%% @end
+%% -------------------------------------------------------------------
 get_target_app_ebin_and_src() ->
-	{ok, TargetApp} = target_app(),
-	R = case (catch (TargetApp:module_info())) of
-			{'EXIT', _} ->
-				App = list_to_atom(atom_to_list(TargetApp) ++ "_app"),
-				case (catch (App:module_info())) of
-					{'EXIT', _} ->
-						{error, could_no_resolve_app_path};
-					ModuleInfo2 ->
-						{ok, ModuleInfo2}
-				end;
-			ModuleInfo3 when is_list(ModuleInfo3) ->
-				{ok, ModuleInfo3}
-		end,
+  {ok, TargetApp} = target_app(),
+
+  R = case (catch (TargetApp:module_info())) of
+		{'EXIT', _} ->
+			App = list_to_atom(atom_to_list(TargetApp) ++ "_app"),
+			
+			case (catch (App:module_info())) of
+				{'EXIT', _} ->
+					{error, could_no_resolve_app_path};
+
+				ModuleInfo2 ->
+					{ok, ModuleInfo2}
+			end;
+
+		ModuleInfo3 when is_list(ModuleInfo3) ->
+			{ok, ModuleInfo3}
+	end,
+
 	case R of
 		{ok, ModuleInfo} ->
 			CompileInfo = proplists:get_value(compile, ModuleInfo, []),
-			Source = filename:dirname(proplists:get_value(source, CompileInfo, "")),
+			Source = filename:dirname(
+				proplists:get_value(source, CompileInfo, "")),
+
 			Options = proplists:get_value(options, CompileInfo, []),
 			OutDir = proplists:get_value(outdir, Options, []),
 			{ok, OutDir, Source};
+
 		Other ->
 			Other
 	end.
@@ -163,12 +181,18 @@ change_session_manager_config(Config) when is_tuple(Config) ->
 change_session_manager_config(Config) when is_list(Config) ->
     CheckedConfig =
         lists:map(
-            fun({Key, Value}) when is_integer(Value), Value > 0,
-                Key == session_expire_time; Key == garbage_collector_frequency ->
+            fun({Key, Value})
+			when is_integer(Value),
+			     Value > 0,
+			     Key == session_expire_time;
+				 Key == garbage_collector_frequency
+			->
                 {Key, Value}
             end, Config),
+
     {ok, OldConfig} = session_manager_config(),
     OldConfigMap = maps:from_list(OldConfig),
+
     CheckedConfigMap = maps:from_list(CheckedConfig),
     NewConfig = maps:to_list(maps:merge(OldConfigMap, CheckedConfigMap)),
 
