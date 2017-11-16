@@ -20,7 +20,7 @@
 
 -compile([export_all]).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Gets the parameters for a ` "WHERE" ' clause of a sql query string.
@@ -45,7 +45,7 @@
 %% @throws {error, invalid_match_field_spec, InvalidForm :: any()} |
 %%         {error, invalid_match_simple_field_spec, InvalidForm :: any()}
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec unparse_match_field_specs(
     PHCountStart, MatchFieldSpecs, OperatorFinder, AllowFullFieldNames) ->
     {SqlStr, Values, ExtraTableNames, LastCountValuePlaceHolder} when
@@ -174,7 +174,7 @@ match_field_specs_sql_builder2(InvalidForm, _, _, _, _, _, AFFN) ->
             erlang:throw({error, {invalid_match_simple_field_spec, InvalidForm}})
     end.
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Un-parses the field names from the `FieldMap' and return a string
@@ -185,7 +185,7 @@ match_field_specs_sql_builder2(InvalidForm, _, _, _, _, _, AFFN) ->
 %%       "id,name".
 %% </pre>
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec unparse_map_fieldnames(FieldsMap, Separator) -> FieldNames when
     FieldsMap :: map(),
     Separator :: string(),
@@ -193,7 +193,7 @@ match_field_specs_sql_builder2(InvalidForm, _, _, _, _, _, AFFN) ->
 unparse_map_fieldnames(FieldsMap, Separator) ->
     unparse_table_names(maps:keys(FieldsMap), Separator).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Un-parses the specified list of keys into a string containing all
@@ -205,7 +205,7 @@ unparse_map_fieldnames(FieldsMap, Separator) ->
 %% </pre>
 %% @throws {error, {invalid_table_spec, InvalidForm :: any()}}
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec unparse_table_names(Fields, Separator) -> FieldNames when
     Fields :: [atom(), ...],
     Separator :: string(),
@@ -213,7 +213,7 @@ unparse_map_fieldnames(FieldsMap, Separator) ->
 unparse_table_names(TableNames, Separator) ->
     unparse_simple_fields(TableNames, Separator, invalid_table_spec).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Un-parses the specified list of fields into a string containing all
@@ -225,7 +225,7 @@ unparse_table_names(TableNames, Separator) ->
 %% </pre>
 %% @throws {error, invalid_return_simple_fields_spec, InvalidForm :: any()}
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec unparse_return_simple_fields(FieldNames, Separator) -> UnParsedFieldNames when
     FieldNames :: [atom(), ...],
     Separator :: string(),
@@ -253,7 +253,7 @@ unparse_simple_fields2([FieldName | Rest], UnParsedFieldNames, ErrorMsg) when is
 unparse_simple_fields2(InvalidForm, _, ErrorMsg) ->
     erlang:throw({error, {ErrorMsg, InvalidForm}}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Un-parses the specified list of full fields into a string containing
@@ -270,7 +270,7 @@ unparse_simple_fields2(InvalidForm, _, ErrorMsg) ->
 %% Returns `{[], []}' if called with `[]'.
 %% @throws {error, invalid_return_fields_spec, InvalidForm :: any()}
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec unparse_return_full_fields(FullFieldsSpecs, Separator, OperatorFinder) ->
     {SqlStr, TableNames} when
     FullFieldsSpecs :: proplists:proplist(),
@@ -348,7 +348,7 @@ unparse_field_names([FieldName | Rest],
 unparse_field_names(InvalidForm, _, _, _) ->
     erlang:throw({error, {invalid_return_fields_spec, InvalidForm}}).
 
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Un-parses the field values and corresponding place holders from the
@@ -366,7 +366,7 @@ unparse_field_names(InvalidForm, _, _, _) ->
 %%       {"$1,$2",[1,"test"],3}
 %% '''
 %% @end
-%% -------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec unparse_fieldvalues(PlaceHolderCountStart, FieldsMap, PlaceHolder) ->
     {ValuePlaceHolders, FieldValues, Count} when
     PlaceHolderCountStart :: pos_integer(),
