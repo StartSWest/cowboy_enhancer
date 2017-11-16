@@ -5,7 +5,7 @@
 %% Config manager to retrieve application set of configurations.
 %% @end
 %% Created : 20. dic 2015 01:15 PM
-%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -module(config_manager).
 -author("Ivan Carmenates Garcia").
 
