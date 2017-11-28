@@ -1,12 +1,12 @@
-%%%-------------------------------------------------------------------
-%%% @author Ivan Carmenates Garcia
-%%% @copyright (C) 2016, Ivanco Software Corporation
-%%% @doc
-%%% This module manages the internal system sessions implementation
-%%% and connection to the database.
-%%% @end
-%%% Created : 11. Jul 2015 4:00 AM
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% @author Ivan Carmenates Garcia
+%% @copyright (C) 2016, Ivanco Software Corporation
+%% @doc
+%% This module manages the internal system sessions implementation
+%% and connection to the database.
+%% @end
+%% Created : 11. Jul 2015 4:00 AM
+%%-------------------------------------------------------------------------------------------------
 -module(session_manager).
 -author("Ivan Carmenates Garcia").
 
@@ -45,7 +45,8 @@
     clean_expired_sessions/0,
     sgc_loop/1,
     get_server_name/0,
-    get_ets_table_name/0]).
+    get_ets_table_name/0,
+		validate_config/1]).
 
 -export([
     test_all/0]).
@@ -107,9 +108,9 @@
     session_data_map/0,
     session_data_proplist/0]).
 
-%%%-------------------------------------------------------------------
-%%% API Functions
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% API Functions
+%%-------------------------------------------------------------------------------------------------
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -118,7 +119,7 @@
 %% You can use `add_session_data/2' or `add_session_data_value/2'
 %% functions to add data to it later.
 %%
-%% @see config_manager:session_manager_config/0.
+%% @see ce_config:session_manager_config/0.
 %% @see create_session/2.
 %% @see create_session/3.
 %% @end
@@ -139,7 +140,7 @@ create_session() ->
 %% <pre>
 %%   create_session(#{user_id => 1, username => "John"}).
 %% </pre>
-%% @see config_manager:session_manager_config/0.
+%% @see ce_config:session_manager_config/0.
 %% @see create_session/2.
 %% @see create_session/3.
 %% @end
@@ -179,7 +180,7 @@ create_session(SessionDataMap) when is_map(SessionDataMap) ->
 %%   create_session(#{user_id => 1, username => "John"},
 %%                  fun(ExpiredSession) -> {cancel, 1000} end).
 %% </pre>
-%% @see config_manager:session_manager_config/0.
+%% @see ce_config:session_manager_config/0.
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec create_session(SessionDataMap, ExpiredCallback) ->
@@ -596,11 +597,11 @@ delete_session(SessionID) ->
     gen_server:call(?SERVER,
         {delete_session, SessionID}, infinity).
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Cleans all the expired sessions.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec clean_expired_sessions() ->
     ok | {error, Reason} when
     Reason :: term().
@@ -719,9 +720,9 @@ select_sessions(SessionDataMapSpec, Options) ->
     gen_server:call(?SERVER,
         {select_sessions, SessionDataMapSpec, Options}, infinity).
 
-%%%===================================================================
-%%% Admin functions
-%%%===================================================================
+%%===================================================================
+%% Admin functions
+%%===================================================================
 
 %% @private
 get_server_name() ->
@@ -731,23 +732,23 @@ get_server_name() ->
 get_ets_table_name() ->
     ?SESSION_ETS_TABLE_NAME.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Starts the server
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec(start_link() ->
     {ok, Pid :: pid()} | ignore | {error, Reason :: term()}).
 start_link() ->
     gen_server:start_link({local, ?SERVER}, ?MODULE,
         [{parent_process, self(), []}], [{timeout, infinity}]).
 
-%%%===================================================================
-%%% gen_server callbacks
-%%%===================================================================
+%%===================================================================
+%% gen_server callbacks
+%%===================================================================
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Initializes the server
@@ -757,12 +758,12 @@ start_link() ->
 %%                     ignore |
 %%                     {stop, Reason}
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec(init(Args :: term()) ->
     {ok, State :: #state{}} | {ok, State :: #state{}, timeout() | hibernate} |
     {stop, Reason :: term()} | ignore).
 init([{parent_process, Pid, Data}]) ->
-    case config_manager:session_manager_config() of
+    case ce_config:session_manager_config() of
         {ok, Config} ->
 
             %%             %% TODO: Old code not using it!!!
@@ -794,13 +795,13 @@ init([{parent_process, Pid, Data}]) ->
             {stop, invalid_or_missing_configuration}
     end.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Handling call messages
 %%
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec(handle_call(Request :: term(), From :: {pid(), Tag :: term()},
     State :: #state{}) ->
     {reply, Reply :: term(), NewState :: #state{}} |
@@ -963,7 +964,7 @@ handle_call(get_expired_sessions, _From, State) ->
     %%     R = mnesia:dirty_select(session, [{MatchHead, [Guard], [Result]}]),
     {reply, R, State};
 
-handle_call({change_config, NewConfig}, _From, State) ->
+handle_call({update_config, NewConfig}, _From, State) ->
     NewExpTime =
         proplists:get_value(session_expire_time, NewConfig, State#state.session_exp_time),
     NewGCFreq =
@@ -998,12 +999,12 @@ code_change(_OldVsn, State, _Extra) ->
 %% Internal functions
 %%-------------------------------------------------------------------------------------------------
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Creates a session with an unique id.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec create_session_internal(MapSessionDataMap, SessionExpireTime, ExpiredCallback) ->
     {ok, SessionID} when
     MapSessionDataMap :: map(),
@@ -1023,12 +1024,12 @@ create_session_internal(MapSessionDataMap, SessionExpireTime, ExpiredCallback) -
     ok = write_session_internal(Session),
     {ok, SessionID}.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Gets a session by its `SessionID'.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec get_session_internal(SessionID) ->
     {ok, Session} | {error, no_session} when
     SessionID :: session_id(),
@@ -1042,12 +1043,12 @@ get_session_internal(SessionID) ->
             {ok, Session}
     end.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Updates a session with `UpdatedSessionDataMap'.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec update_session_internal(OldSession, UpdatedSessionDataMap, Mode, SessionExpireTime) ->
     ok when
     OldSession :: erlang:record(session),
@@ -1067,12 +1068,12 @@ update_session_internal(OldSession, UpdatedSessionDataMap, Mode, SessionExpireTi
     },
     ok = write_session_internal(NewSession).
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Refreshes a session expiration time.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec refresh_session_exp_time_internal(Session, SessionExpireTime) -> ok when
     Session :: erlang:record(session),
     SessionExpireTime :: timeout().
@@ -1083,12 +1084,12 @@ refresh_session_exp_time_internal(Session, SessionExpireTime)
     },
     ok = write_session_internal(NewSession).
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Finds all sessions that contains the specified session data.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec find_sessions_by_data(SessionDataMap, Limit) ->
     {ok, SessionID | [SessionID, ...]} | {error, no_session} when
     SessionDataMap :: session_data_map(),
@@ -1105,12 +1106,12 @@ find_sessions_by_data(SessionDataMap, Limit) ->
             {ok, SessionIDs}
     end.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Stores a session data to the session database.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec write_session_internal(Session) -> ok when
     Session :: erlang:record(session).
 write_session_internal(Session) ->
@@ -1118,12 +1119,12 @@ write_session_internal(Session) ->
     true = ets:insert(?SESSION_ETS_TABLE_NAME, Session),
     ok.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Deletes a session.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec delete_session_internal(SessionID) -> ok when
     SessionID :: session_id().
 delete_session_internal(SessionID) ->
@@ -1131,12 +1132,12 @@ delete_session_internal(SessionID) ->
     true = ets:delete(?SESSION_ETS_TABLE_NAME, SessionID),
     ok.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Checks whether a session has expired.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec check_session_expiration_time(Session) ->
     ok | {error, session_expired} when
     Session :: erlang:record(session).
@@ -1149,7 +1150,7 @@ check_session_expiration_time(Session) ->
             ok
     end.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Tries to expire a specified session.
@@ -1161,7 +1162,7 @@ check_session_expiration_time(Session) ->
 %%       the expiration callback. However the session will be deleted
 %%       anyway.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec expire_session_internal(ExpiredSession) ->
     ok | {ok, CallBackReturnValue}| {error, Reason} | canceled when
     ExpiredSession :: erlang:record(session),
@@ -1197,12 +1198,12 @@ expire_session_internal(ExpiredSession) ->
             {ok, CallBackReturnValue}
     end.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Converts session record to a map.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec record_to_map(Record) -> map() when
     Record :: erlang:record(session).
 record_to_map(Record) ->
@@ -1213,13 +1214,13 @@ record_to_map(Record) ->
         expired_callback => Record#session.expired_callback
     }.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Returns `no_data' if `SessionDataMap' is a zero size map or the
 %% entire map otherwise.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec validate_session_data_map(SessionDataMap) ->
     no_data | SessionDataMap when
     SessionDataMap :: map().
@@ -1229,12 +1230,12 @@ validate_session_data_map(SessionDataMap) ->
         _ -> SessionDataMap
     end.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Converts session record to a proplist.
 %% @end
-%%--------------------------------------------------------------------
+%%--------------------------------------------------------------------------------------------------
 -spec record_to_proplist(Record) -> proplists:proplist() when
     Record :: erlang:record(session).
 record_to_proplist(Record) ->
@@ -1244,6 +1245,38 @@ record_to_proplist(Record) ->
         {expire_time, Record#session.expire_time},
         {expired_callback, Record#session.expired_callback}
     ].
+
+%%-------------------------------------------------------------------------------------------------
+%% @private
+%% @doc
+%% Validates the session manager configuration.
+%% @end
+%%-------------------------------------------------------------------------------------------------
+-spec validate_config(Config)
+	-> ok
+	 | erlang:exit()
+ 	when
+	  Config :: tuple() | list().
+%%/////////////////////////////////////////////////////////////////////////////////////////////////
+validate_config(Config) when is_tuple(Config) ->
+	validate_config([Config]);
+
+validate_config(Config) ->
+	% filters valid config.
+	lists:foreach(
+		fun ({Key, Value})
+		when
+			is_integer(Value),
+			Value > 0,
+			Key == session_expire_time;
+			Key == garbage_collector_frequency 
+		-> 
+			ok
+		;
+		({_Key, Value} = InvalidConfig) ->
+			exit({invalid_config, InvalidConfig, 
+			 "TIP: Perhaps you intended: 'session_expire_time' or 'garbage_collector_frequency'"})
+		end, Config).
 
 %%-------------------------------------------------------------------------------------------------
 %% Garbage Collector functions
@@ -1263,9 +1296,9 @@ sgc_loop(Interval) ->
         sgc_loop(Interval)
     end.
 
-%%%-------------------------------------------------------------------
-%%% Test Functions
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% Test Functions
+%%-------------------------------------------------------------------------------------------------
 
 test_all() ->
     io:format("*** Starting Tests ***~n~n"),

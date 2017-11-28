@@ -1,11 +1,11 @@
-%%%-------------------------------------------------------------------
-%%% @author Ivan Carmenates Garcia
-%%% @copyright (C) 2015, Ivanco Software Corporation
-%%% @doc
-%%%
-%%% @end
-%%% Created : 24. Aug 2015 5:23 AM
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% @author Ivan Carmenates Garcia
+%% @copyright (C) 2015, Ivanco Software Corporation
+%% @doc
+%%
+%% @end
+%% Created : 24. Aug 2015 5:23 AM
+%%-------------------------------------------------------------------------------------------------
 -module(debug_handler).
 -author("Ivan Carmenates Garcia").
 

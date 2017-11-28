@@ -1,11 +1,11 @@
-%%%-------------------------------------------------------------------
-%%% @author Ivan Carmenates Garcia
-%%% @copyright (C) 2015, Ivanco Software Corporation
-%%% @doc
-%%% This is a cowboy subprotocol.
-%%% @end
-%%% Created : 17. Jul 2015 3:14 PM
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% @author Ivan Carmenates Garcia
+%% @copyright (C) 2015, Ivanco Software Corporation
+%% @doc
+%% This is a cowboy subprotocol.
+%% @end
+%% Created : 17. Jul 2015 3:14 PM
+%%-------------------------------------------------------------------------------------------------
 -module(require_auth).
 -author("Ivan Carmenates Garcia").
 

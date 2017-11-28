@@ -1,12 +1,12 @@
-%%%-------------------------------------------------------------------
-%%% @author Ivan Carmenates Garcia
-%%% @copyright (C) 2015, Ivanco Software Corporation
-%%% @doc
-%%% This module manages the direct actions over the database backends,
-%%% it is also a generic interface to it.
-%%% @end
-%%% Created : 13. Jul 2015 3:52 PM
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% @author Ivan Carmenates Garcia
+%% @copyright (C) 2015, Ivanco Software Corporation
+%% @doc
+%% This module manages the direct actions over the database backends,
+%% it is also a generic interface to it.
+%% @end
+%% Created : 13. Jul 2015 3:52 PM
+%%-------------------------------------------------------------------------------------------------
 -module(database_manager).
 -author("Ivan Carmenates Garcia").
 
@@ -1255,9 +1255,9 @@ find({Backend, Connection}, TableNames, MatchFieldSpecs, Options) ->
     %% executes find/4 in the current 'Backend'.
     Backend:find(Connection, TableNames, MatchFieldSpecs, Options).
 
-%%%-------------------------------------------------------------------
-%%% Admin API Functions
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% Admin API Functions
+%%-------------------------------------------------------------------------------------------------
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -1356,27 +1356,27 @@ update_backend_options(BackendName, NewOptions) ->
             Other
     end.
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Starts the server
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec(start_link() ->
     {ok, Pid :: pid()} | ignore | {error, Reason :: term()}).
 start_link() ->
     gen_server:start_link({local, ?SERVER}, ?MODULE, [], [{timeout, infinity}]).
 
-%%%===================================================================
-%%% gen_server callbacks
-%%%===================================================================
+%%===================================================================
+%% gen_server callbacks
+%%===================================================================
 
 %% @private
 init([]) ->
     {ok, _} = supervisor:start_link({local, ?CONNECTION_POOL_SUP_NAME}, connection_pool_sup, []),
     %% gets all the config for database manager.
     %% TODO: check this if cowboy_enhancer changes its name in future for any reason.
-    case config_manager:database_manager_config() of
+    case ce_config:database_manager() of
         {ok, BackendsConfig} ->
             case parse_backend_config(BackendsConfig) of
                 [] ->
@@ -1416,9 +1416,9 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-%%%===================================================================
-%%% Internal Functions
-%%%===================================================================
+%%===================================================================
+%% Internal Functions
+%%===================================================================
 
 %%-------------------------------------------------------------------------------------------------
 %% @private
@@ -1470,13 +1470,13 @@ parse_backend_config(ListOfBackends) ->
         end
     end, [], ListOfBackends).
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @private
 %% @doc
 %% Starts a connection pool for each Configured Backend.
 %% Returns: {ok, Count} which is the amount of pools started.
 %% @end
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 -spec connection_pool_starter(BackendsConfig) ->
     {ok, Count} when
     BackendsConfig :: [{BackendName, [{OptionName, OptionValue}, ...]}],

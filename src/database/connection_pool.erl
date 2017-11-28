@@ -1,65 +1,88 @@
-%%%-------------------------------------------------------------------
-%%% @author Ivan Carmenates Garcia
-%%% @copyright (C) 2015, Ivanco Software Corporation
-%%% @doc
-%%% This the connection multi pool gen_server for database manager.
-%%% So you can start many pools, i.e. one for each database backend.
-%%% @end
-%%% Created : 14. Aug 2015 8:48 PM
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% @author Ivan Carmenates Garcia
+%% @copyright (C) 2017, Ivanco Software Corporation
+%%
+%% @doc
+%% This the connection multi pool gen_server for database manager. You can start many pools, i.e. 
+%% one for each database backend.
+%% @end
+%% Created : 14. Aug 2015 8:48 PM
+%%-------------------------------------------------------------------------------------------------
 -module(connection_pool).
 -author("Ivan Carmenates Garcia").
 
-%% Admin API Exports
--export([
-    start_link/2]).
+-behaviour(gen_server).
 
+%%=================================================================================================
+%% API Exports
+%%=================================================================================================
+-export([start_link/2]).
+
+%%=================================================================================================
 %% gen_server Callbacks Exports
+%%=================================================================================================
 -export([
-    init/1,
-    handle_call/3,
-    handle_cast/2,
-    handle_info/2,
-    terminate/2,
-    code_change/3]).
+	init/1,
+  handle_call/3,
+  handle_cast/2,
+  handle_info/2,
+  terminate/2,
+  code_change/3]).
 
-%%-------------------------------------------------------------------------------------------------
+%%=================================================================================================
 %% MACRO Definition
-%%-------------------------------------------------------------------------------------------------
+%%=================================================================================================
 -define(CONFIG_OPTIONS, [
-    backend,
-    server,
-    username,
-    password,
-    database,
-    %% max number of connections in the pool.
-    max_reusable_connections,
-    %% time to wait for a available connection.
-    wait_for_reusable_connection_timeout
+	backend,
+  server,
+  username,
+  password,
+  database,
+  % max number of connections in the pool.
+  max_reusable_connections,
+  % time to wait for a available connection.
+  wait_for_reusable_connection_timeout
 ]).
 
-%%-------------------------------------------------------------------------------------------------
+%%=================================================================================================
 %% Admin API Functions
-%%-------------------------------------------------------------------------------------------------
+%%=================================================================================================
 
-%%--------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Starts the connection pool for a backend.
 %% @end
-%%--------------------------------------------------------------------
--spec start_link(PoolName, BackendConfig) ->
-    {ok, Pid :: pid()} | ignore | {error, Reason :: term()} when
+%%-------------------------------------------------------------------------------------------------
+-spec start_link(PoolName, BackendConfig)
+	-> {ok, Pid}
+	 | ignore
+	 | {error, {already_started, Pid} | Reason}
+	when
     PoolName :: atom(),
-    BackendConfig :: proplists:proplist().
+    BackendConfig :: proplists:proplist(),
+		Pid :: pid(),
+		Reason :: term().
+%%/////////////////////////////////////////////////////////////////////////////////////////////////
 start_link(PoolName, BackendConfig) ->
-    gen_server:start_link({local, PoolName}, ?MODULE, BackendConfig, [{timeout, infinity}]).
+	gen_server:start_link({local, PoolName}, ?MODULE, BackendConfig, [{timeout, infinity}]).
 
-%%%===================================================================
-%%% gen_server Callbacks
-%%%===================================================================
+%%=================================================================================================
+%% gen_server Callbacks
+%%=================================================================================================
 
--spec init(BackendConfig) ->
-    {ok, State} | {ok, State, timeout() | hibernate} | {stop, Reason} | ignore when
+%%-------------------------------------------------------------------------------------------------
+%% @doc
+%% Whenever a supervisor is started using supervisor:start_link/[2,3], this function is called by 
+%% the new process to find out about restart strategy, maximum restart frequency and child 
+%% specifications.
+%% @end
+%%-------------------------------------------------------------------------------------------------
+-spec init(BackendConfig)
+	-> {ok, State}
+	 | {ok, State, timeout() | hibernate}
+	 | {stop, Reason}
+	 | ignore
+	when
     BackendConfig :: proplists:proplist(),
     State :: map(),
     Reason :: term().
@@ -215,9 +238,9 @@ terminate(_Reason, _State) ->
 code_change(_OldVsn, State, _Extra) ->
     {ok, State}.
 
-%%%===================================================================
-%%% Internal Functions
-%%%===================================================================
+%%===================================================================
+%% Internal Functions
+%%===================================================================
 
 validate_options(Options) ->
     Keys = proplists:get_keys(Options),

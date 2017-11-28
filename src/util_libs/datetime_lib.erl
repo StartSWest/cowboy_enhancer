@@ -1,11 +1,11 @@
-%%%-------------------------------------------------------------------
-%%% @author Ivan Carmenates Garcia
-%%% @copyright (C) 2015, Ivanco Software Corporation
-%%% @doc
-%%% DateTime util module.
-%%% @end
-%%% Created : 23. Jul 2015 2:29 AM
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% @author Ivan Carmenates Garcia
+%% @copyright (C) 2015, Ivanco Software Corporation
+%% @doc
+%% DateTime util module.
+%% @end
+%% Created : 23. Jul 2015 2:29 AM
+%%-------------------------------------------------------------------------------------------------
 -module(datetime_lib).
 -author("Ivan Carmenates Garcia").
 

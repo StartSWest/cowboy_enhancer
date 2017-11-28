@@ -44,7 +44,7 @@ start_verbose(VerboseTime) ->
     load_controllers(VerboseTime),
     verbose_log(1, "~nStarting system...~n"),
     timer:sleep(20 * VerboseTime),
-    case config_manager:target_app() of
+    case ce_config:target_app() of
         {ok, App} ->
             %% starts the target application.
             %%{ok, _} = application:ensure_all_started(App),
@@ -76,7 +76,8 @@ start(_Type, _Args) ->
     %observer:start(),
 
     %% Starts the supervisor.
-    cowboy_enhancer_sup:start_link().
+    cowboy_enhancer_sup:start_link(),
+		io:format("*** Yeah cowboy_enhancer! started").
 
 stop(_State) ->
     verbose_log(1, "~n~nStopping system..."),
@@ -152,9 +153,9 @@ unprepare_code() ->
 compile_templates(VerboseTime) ->
     verbose_log(1, "~nCompiling templates...~n"),
     %% output directory for compiled templates.
-    {ok, OutDir, Source} = config_manager:get_target_app_ebin_and_src(),
+    {ok, OutDir, Source} = ce_config:get_target_app_ebin_and_src(),
     %% source code directory for templates.
-    {ok, RelTemplateDir} = config_manager:get_templates_dir(),
+    {ok, RelTemplateDir} = ce_config:get_templates_dir(),
     TemplatesDir = filename:join([Source ++ "/" ++ RelTemplateDir]),
     filelib:fold_files(TemplatesDir, ".html", true, fun(File, _Acc) ->
         timer:sleep(VerboseTime),
@@ -178,7 +179,7 @@ compile_templates(VerboseTime) ->
 
 load_controllers(VerboseTime) ->
     verbose_log(1, "~nLoading modules...~n"),
-    {ok, OutDir, Source} = config_manager:get_target_app_ebin_and_src(),
+    {ok, OutDir, Source} = ce_config:get_target_app_ebin_and_src(),
     filelib:fold_files(OutDir, ".beam", true, fun(File, _Acc) ->
         timer:sleep(VerboseTime),
         FN = list_to_atom(filename:basename(filename:rootname(File))),
@@ -196,7 +197,7 @@ load_controllers(VerboseTime) ->
 verbose_log(VerboseLevelTarget, Format) ->
     verbose_log(VerboseLevelTarget, Format, []).
 verbose_log(VerboseLevelTarget, Format, Args) ->
-    VerboseLevel = config_manager:system_start_verbose_level(),
+    VerboseLevel = ce_config:system_start_verbose_level(),
     case ((VerboseLevel >= VerboseLevelTarget) or (VerboseLevelTarget =< 0)) of
         true ->
             io:format(Format, Args);

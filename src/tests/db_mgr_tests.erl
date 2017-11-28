@@ -1,11 +1,11 @@
-%%%-------------------------------------------------------------------
-%%% @author Ivan Carmenates Garcia
-%%% @copyright (C) 2015, Ivanco Software Corporation
-%%% @doc
-%%% Tests for 'database_manager'.
-%%% @end
-%%% Created : 05. Oct 2015 9:54 AM
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% @author Ivan Carmenates Garcia
+%% @copyright (C) 2015, Ivanco Software Corporation
+%% @doc
+%% Tests for 'database_manager'.
+%% @end
+%% Created : 05. Oct 2015 9:54 AM
+%%-------------------------------------------------------------------------------------------------
 -module(db_mgr_tests).
 -author("Ivan Carmenates Garcia").
 

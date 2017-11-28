@@ -1,35 +1,35 @@
-%%%-------------------------------------------------------------------
-%%% @author Ivan Carmenates Garcia
-%%% @copyright (C) 2015, Ivanco Software Corporation
-%%% @doc
-%%% This modules handles the error and logs messages for the system.
-%%% It depends on 'app_error' template because it use it to render
-%%% the error to be shown later to the client.
-%%% @end
-%%% Created : 14. Jul 2015 6:06 PM
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% @author Ivan Carmenates Garcia
+%% @copyright (C) 2015, Ivanco Software Corporation
+%% @doc
+%% This modules handles the error and logs messages for the system.
+%% It depends on 'app_error' template because it use it to render
+%% the error to be shown later to the client.
+%% @end
+%% Created : 14. Jul 2015 6:06 PM
+%%-------------------------------------------------------------------------------------------------
 -module(debug_message).
 -author("Ivan Carmenates Garcia").
 
-%%%-------------------------------------------------------------------
-%%% API Exports
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% API Exports
+%%-------------------------------------------------------------------------------------------------
 -export([
     render_error/2,
     render_server_error/2]).
 
-%%%-------------------------------------------------------------------
-%%% TYPE Definition
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% TYPE Definition
+%%-------------------------------------------------------------------------------------------------
 -type error_type() :: atom().
 -type error_list() :: list().
 -type error() :: {error_type(), error_list()}.
 
 -export_type([error/0]).
 
-%%%-------------------------------------------------------------------
-%%% API Functions
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% API Functions
+%%-------------------------------------------------------------------------------------------------
 
 %% @doc
 %% Renders a html body for the given errors using the

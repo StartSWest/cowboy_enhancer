@@ -1,11 +1,11 @@
-%%%-------------------------------------------------------------------
-%%% @author Ivan Carmenates Garcia
-%%% @copyright (C) 2015, Ivanco Software Corporation
-%%% @doc
-%%% Ports many helper sql string builder functionalities.
-%%% @end
-%%% Created : 21. Sep 2015 11:03 PM
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% @author Ivan Carmenates Garcia
+%% @copyright (C) 2015, Ivanco Software Corporation
+%% @doc
+%% Ports many helper sql string builder functionalities.
+%% @end
+%% Created : 21. Sep 2015 11:03 PM
+%%-------------------------------------------------------------------------------------------------
 -module(sql_builder_tools).
 -author("Ivan Carmenates Garcia").
 

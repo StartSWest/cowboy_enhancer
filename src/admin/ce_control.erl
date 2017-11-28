@@ -1,6 +1,6 @@
 %%-------------------------------------------------------------------------------------------------
 %% @author Ivan Carmenates Garcia
-%% @copyright (C) 2015, Ivanco Software Corporation
+%% @copyright (C) 2017, Ivanco Software Corporation
 %%
 %% @doc
 %% Control module for hot code rebuild and load.
@@ -10,17 +10,16 @@
 -module(ce_control).
 -author("Ivan Carmenates Garcia").
 
-%%-------------------------------------------------------------------------------------------------
+%%=================================================================================================
 %% API Exports
-%%-------------------------------------------------------------------------------------------------
+%%=================================================================================================
 -export([
   rebuild_all/0,
   rebuild/1]).
 
-
-%%-------------------------------------------------------------------------------------------------
+%%=================================================================================================
 %% API Functions
-%%-------------------------------------------------------------------------------------------------
+%%=================================================================================================
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -35,7 +34,7 @@
 rebuild_all() ->
   % tries to rebuild all non-sticky recently modified project files.
   All = code:all_loaded(),
-  L = [rebuild(M) || {M, F} <- All, is_list(F), not code:is_sticky(M)],
+  L = [rebuild1(M) || {M, F} <- All, is_list(F), not code:is_sticky(M)],
 
   % if all files compiled ok, return ok, otherwise error.
   % NOTE: {warning, out_of_date_beam} isn't considered an error.
@@ -50,7 +49,7 @@ rebuild_all() ->
       %---------------
       % Debug.       -
       %---------------
-      io:format("~nWe have some errors!~n"),
+			debug_logger:debug("~nWe have some errors!~n"),
       %---------------
       error
   end.
@@ -60,20 +59,39 @@ rebuild_all() ->
 %% Rebuilds and loads a recently modified module or erlydtl template.
 %% @end
 %%-------------------------------------------------------------------------------------------------
--spec rebuild(Module)
+-spec rebuild(ModuleName)
   -> ok
    | {warn, out_of_date_beam}
    | ignore
    | {error, Errors, Warnings}
+ 	 | error
   when
-    Module :: atom(),
+    ModuleName :: atom(),
     Errors :: list(),
     Warnings :: list().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
-rebuild(Module) ->
-  % gets the module beam path.
-  BeamPath = code:which(Module),
-  
+rebuild(ModuleName) ->
+  rebuild1(ModuleName).
+
+%%=================================================================================================
+%% Internal Functions
+%%=================================================================================================
+
+%%-------------------------------------------------------------------------------------------------
+-spec rebuild1(ModuleName)
+	-> ok
+   | {warn, out_of_date_beam}
+	 | ignore
+	 | {error, Errors, Warnings}
+	 | error
+	when
+		ModuleName :: atom(),
+		Errors :: list(),
+		Warnings :: list().
+%%/////////////////////////////////////////////////////////////////////////////////////////////////
+rebuild1(ModuleName)->
+	% gets the module beam path.
+  BeamPath = code:which(ModuleName),
   % ensures that a module is a compiled one.
   case BeamPath of
     [] ->
@@ -83,25 +101,33 @@ rebuild(Module) ->
       % only compile files that belongs to the project.
       case check_compilable(BeamPath) of
         true ->
-          rebuild2(Module, BeamPath);
+          rebuild2(ModuleName, BeamPath);
         _ ->
           ignore
       end
   end.
 
 %%-------------------------------------------------------------------------------------------------
-%% Internal Functions
-%%-------------------------------------------------------------------------------------------------
-
-%%-------------------------------------------------------------------------------------------------
-rebuild2(Module, BeamPath)->
+-spec rebuild2(ModuleName, BeamPath)
+	-> ok
+   | {warn, out_of_date_beam}
+	 | ignore
+	 | {error, Errors, Warnings}
+	 | error
+	when
+		ModuleName :: atom(),
+		BeamPath :: string(),
+		Errors :: list(),
+		Warnings :: list().
+%%/////////////////////////////////////////////////////////////////////////////////////////////////
+rebuild2(ModuleName, BeamPath)->
   % gets last modified time of the module compiled beam file.
   BeamLMTime = filelib:last_modified(BeamPath),
 
-  case check_last_modified_Time(BeamLMTime, Module, BeamPath) of
+  case check_last_modified_Time(BeamLMTime, ModuleName, BeamPath) of
     ok ->
       % gets compile info from the module compiled beam.
-      CompileInfo = Module:module_info(compile),
+      CompileInfo = ModuleName:module_info(compile),
 
       % gets the source code path of the compiled module.
       SourcePath = proplists:get_value(source, CompileInfo),
@@ -109,9 +135,9 @@ rebuild2(Module, BeamPath)->
       % gets last modified time of the source code.
       ScLMTime = filelib:last_modified(SourcePath),
       
-      case check_last_modified_Time(ScLMTime, Module, BeamPath) of
+      case check_last_modified_Time(ScLMTime, ModuleName, BeamPath) of
         ok ->
-          rebuild3(Module, BeamPath, SourcePath, BeamLMTime, ScLMTime, CompileInfo);
+          rebuild3(ModuleName, BeamPath, SourcePath, BeamLMTime, ScLMTime, CompileInfo);
         Other ->
           % {warn, out_of_date_beam} | ignore | error.
           Other
@@ -122,7 +148,21 @@ rebuild2(Module, BeamPath)->
   end.
 
 %%-------------------------------------------------------------------------------------------------
-rebuild3(Module, BeamPath, SourcePath, BeamLMTime, ScLMTime, CompileInfo) ->
+-spec rebuild3(ModuleName, BeamPath, SourcePath, BeamLMTime, ScLMTime, CompileInfo)
+	-> ok
+	 | {error, Errors, Warnings}
+	 | error
+	when
+		ModuleName :: atom(),
+		BeamPath :: string(),
+		SourcePath :: string(),
+		BeamLMTime :: calendar:datetime(),
+		ScLMTime :: calendar:datetime(),
+		CompileInfo :: proplists:proplist(),
+		Errors :: list(),
+		Warnings :: list().
+%%/////////////////////////////////////////////////////////////////////////////////////////////////
+rebuild3(ModuleName, BeamPath, SourcePath, BeamLMTime, ScLMTime, CompileInfo) ->
   % gets both beam and source code modified universal time.
   ScLMTime2 = erlang:localtime_to_universaltime(ScLMTime),
   BeamLMTime2 = erlang:localtime_to_universaltime(BeamLMTime),
@@ -130,14 +170,26 @@ rebuild3(Module, BeamPath, SourcePath, BeamLMTime, ScLMTime, CompileInfo) ->
   case ScLMTime2 > BeamLMTime2 of
     true ->
       % code changed need to recompile.
-      rebuild4(Module, BeamPath, SourcePath, CompileInfo);
+      rebuild4(ModuleName, BeamPath, SourcePath, CompileInfo);
     _ ->
       % code updated nothing to do!
       ok
   end.
 
 %%-------------------------------------------------------------------------------------------------
-rebuild4(Module, BeamPath, SourcePath, CompileInfo) ->
+-spec rebuild4(ModuleName, BeamPath, SourcePath, CompileInfo)
+	-> ok
+	 | {error, Errors, Warnings}
+	 | error
+	when
+		ModuleName :: atom(),
+		BeamPath :: string(),
+		SourcePath :: string(),
+		CompileInfo :: proplists:proplist(),
+		Errors :: list(),
+		Warnings :: list().
+%%/////////////////////////////////////////////////////////////////////////////////////////////////
+rebuild4(ModuleName, BeamPath, SourcePath, CompileInfo) ->
   % gets the compile options.
   CompileOpts = proplists:get_value(options, CompileInfo),
 
@@ -148,18 +200,31 @@ rebuild4(Module, BeamPath, SourcePath, CompileInfo) ->
       {error, Errors, Warnings};
     _ ->
       % NOTE: the compilation was a success.
-      code:purge(Module),
-      code:load_file(Module),
+      code:purge(ModuleName),
+      code:load_file(ModuleName),
       
       %---------------
       % Debug.       -
       %---------------
-      io:format("     done.~n"),
+      debug_logger:debug("     done.~n"),
       %---------------
       ok
   end.
 
 %%-------------------------------------------------------------------------------------------------
+-spec rebuild5(BeamPath, SourcePath, CompileOpts)
+	-> {ok, ModuleName}
+	 | {ok, ModuleName, Warnings}
+	 | {error, Errors, Warnings}
+ 	 | error
+	when
+		BeamPath :: string(),
+		SourcePath :: string(),
+		CompileOpts :: proplists:proplist(),
+		ModuleName :: atom(),
+		Warnings :: list(),
+		Errors :: list().
+%%/////////////////////////////////////////////////////////////////////////////////////////////////
 rebuild5(BeamPath, SourcePath, CompileOpts) ->
   case filename:extension(SourcePath) of
     Ext when (Ext == ".html") or (Ext == ".dtl") ->
@@ -172,6 +237,14 @@ rebuild5(BeamPath, SourcePath, CompileOpts) ->
 
 %% NOTE: the source is from a erlydtl template.
 %%-------------------------------------------------------------------------------------------------
+-spec compile_template(SourcePath, CompileOpts)
+	-> {ok, ModuleName}
+	 | error
+	when
+		SourcePath :: string(),
+		CompileOpts :: proplists:proplist(),
+		ModuleName :: atom().
+%%/////////////////////////////////////////////////////////////////////////////////////////////////
 compile_template(SourcePath, CompileOpts) ->
   % gets current ebin dir.
   {ok, CWD} = file:get_cwd(), 
@@ -183,7 +256,8 @@ compile_template(SourcePath, CompileOpts) ->
   %---------------
   % Debug.       -
   %---------------
-  io:format("~n  => Recompiling modified template: ~p... ", [filename:basename(SourcePath)]),
+	debug_logger:debug(
+		"~n  => Recompiling modified template: ~p... ", [filename:basename(SourcePath)]),
   %---------------
   
   % compiles the template.
@@ -191,11 +265,24 @@ compile_template(SourcePath, CompileOpts) ->
 
 %% NOTE: the source is a normal erlang file.
 %%-------------------------------------------------------------------------------------------------
+-spec compile_file(BeamPath, SourcePath, CompileOpts)
+	-> {ok, ModuleName}
+	 | {ok, ModuleName, Warnings}
+	 | {error, Errors, Warnings}
+ 	 | error
+	when
+		BeamPath :: string(),
+		SourcePath :: string(),
+		CompileOpts :: proplists:proplist(),
+		ModuleName :: atom(),
+		Warnings :: list(),
+		Errors :: list().
+%%/////////////////////////////////////////////////////////////////////////////////////////////////
 compile_file(BeamPath, SourcePath, CompileOpts) ->
   %---------------
   % Debug.       -
   %---------------
-  io:format("~n  => Recompiling modified file: ~p...~n", [filename:basename(SourcePath)]),
+	debug_logger:debug("~n  => Recompiling modified file: ~p...", [filename:basename(SourcePath)]),
   %---------------
 
   % creates a temp directory for hot compilations.
@@ -229,7 +316,16 @@ compile_file(BeamPath, SourcePath, CompileOpts) ->
   end.
 
 %%-------------------------------------------------------------------------------------------------
-check_last_modified_Time(LMTime, Module, BeamPath)->
+-spec check_last_modified_Time(LMTime, ModuleName, BeamPath)
+	-> ok
+	 | ignore
+	 | {warn, out_of_date_beam}
+	when
+		LMTime :: calendar:datetime(),
+		ModuleName :: atom(),
+		BeamPath :: string().
+%%/////////////////////////////////////////////////////////////////////////////////////////////////
+check_last_modified_Time(LMTime, ModuleName, BeamPath)->
   case LMTime of
     0 ->
       % NOTE: this means invalid time info, therefore means invalid source code path; out of 
@@ -239,10 +335,8 @@ check_last_modified_Time(LMTime, Module, BeamPath)->
           %---------------
           % Debug.       -
           %---------------
-          io:format(
-            "~nWarning: Module '~p.beam' meta info is out of date or file doesn't exists. Please ~n"
-            "         recompile it for automatic compile to work properly in dev mode for this module!~n",
-            [Module]),
+					debug_logger:debug(
+            "~nWarning: Module '~p.beam' meta info is out of date or file doesn't exists. Please recompile it manually otherwise auto-compile will not work for this module!~n", [ModuleName]),
           %---------------
           {warn, out_of_date_beam};
         false ->
@@ -255,6 +349,12 @@ check_last_modified_Time(LMTime, Module, BeamPath)->
   end.
 
 %%-------------------------------------------------------------------------------------------------
+-spec check_compilable(BeamPath)
+	-> true
+	 | false
+	when
+	  BeamPath :: string().
+%%/////////////////////////////////////////////////////////////////////////////////////////////////
 check_compilable(BeamPath) ->
   % gets current working directory.
   {ok, CWD} = file:get_cwd(),

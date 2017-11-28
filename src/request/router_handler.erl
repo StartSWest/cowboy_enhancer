@@ -1,12 +1,12 @@
-%%%-------------------------------------------------------------------
-%%% @author Ivan Carmenates Garcia
-%%% @copyright (C) 2015, Ivanco Software Corporation
-%%% @doc
-%%% Handles routes and code recompiling and reloading when in
-%%% development mode.
-%%% @end
-%%% Created : 07. Aug 2015 7:58 PM
-%%%-------------------------------------------------------------------
+%%-------------------------------------------------------------------------------------------------
+%% @author Ivan Carmenates Garcia
+%% @copyright (C) 2015, Ivanco Software Corporation
+%% @doc
+%% Handles routes and code recompiling and reloading when in
+%% development mode.
+%% @end
+%% Created : 07. Aug 2015 7:58 PM
+%%-------------------------------------------------------------------------------------------------
 -module(router_handler).
 -author("Ivan Carmenates Garcia").
 
