@@ -179,18 +179,17 @@ info_msg(MessageFormat, Params) ->
 %%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Shows debug message at it is.
-%% NOTE: 'Params' is the same as in io:format("~p", [Params]).
 %% @end
 %%-------------------------------------------------------------------------------------------------
--spec debug(Params)
+-spec debug(Message)
   -> ok
    | {error, Reason}
   when
-    Params :: term(),
+    Message :: string(),
     Reason :: term().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
-debug(Params) ->
-  debug("~p", [Params]).
+debug(Message) ->
+  debug(Message, []).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
