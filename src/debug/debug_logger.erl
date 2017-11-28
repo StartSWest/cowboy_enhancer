@@ -176,7 +176,6 @@ info_msg(MessageFormat, Params) ->
     "\n==================== Debug Logger! ====================\n"
     "  MESSAGE: " ++ MessageFormat ++ "~n", Params).
 
-
 %%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Shows debug message at it is.
