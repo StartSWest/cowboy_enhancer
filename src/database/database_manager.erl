@@ -421,7 +421,7 @@ wait_for_available_connection(TimeOut, ConnectionPool) ->
                     wait_for_available_connection(TimeOut, ConnectionPool)
             end
     after TimeOut ->
-        debug_logger:log_warning_msg(
+        debug_logger:warning_msg(
             "Caller ~p got timeout waiting for an available connection", [self()]),
         %% unregisters the caller once it ends the waiting.
         ok = gen_server:call(ConnectionPool, {unregister_caller, self()}),
@@ -1453,7 +1453,7 @@ parse_backend_config(ListOfBackends) ->
             or (Password =:= undefined) or (Database =:= undefined)
         of
             true ->
-                debug_logger:log_warning_msg(
+                debug_logger:warning_msg(
                     "database backend defined under '~p' name has an incomplete "
                     "configuration. Not using it!", [BackendName]),
                 Acc;
@@ -1495,7 +1495,7 @@ connection_pool_starter(BackendsConfig) ->
                 {ok, _} ->
                     Count;
                 {error, {already_started, _Child}} ->
-                    debug_logger:log_warning_msg(
+                    debug_logger:warning_msg(
                         "Duplicated backend configuration found!~n"
                         "           You have configured multiple '~p' backends.~n"
                         "           Only the first one will be used", [BackendName]),

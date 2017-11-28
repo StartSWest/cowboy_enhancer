@@ -1191,7 +1191,7 @@ expire_session_internal(ExpiredSession) ->
             %% occurs inside the expiration function.
             delete_session(ExpiredSession#session.id),
             %% logs the error.
-            debug_logger:log_error_msg(Reason),
+            debug_logger:error_msg(Reason),
             {error, Reason};
         CallBackReturnValue ->
             delete_session(ExpiredSession#session.id),

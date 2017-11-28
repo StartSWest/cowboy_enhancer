@@ -13,7 +13,7 @@
 %% API Exports
 %%=================================================================================================
 -export([
-	log_error/2,
+  log_error/2,
   log_error/3,
   error_msg/1,
   error_msg/2,
@@ -21,8 +21,8 @@
   warning_msg/2,
   info_msg/1,
   info_msg/2,
-	debug/1,
-	debug/2]).
+  debug/1,
+  debug/2]).
 
 %%=================================================================================================
 %% API Functions
@@ -35,15 +35,15 @@
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec log_error(StackTrace, Params)
-	-> ok
-	 | {error, Reason}
-	when
+  -> ok
+   | {error, Reason}
+  when
     StackTrace :: term(),
     Params :: term(),
     Reason :: term().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 log_error(StackTrace, Params) ->
-	log_error(StackTrace, "~p", [Params]).
+  log_error(StackTrace, "~p", [Params]).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -52,24 +52,24 @@ log_error(StackTrace, Params) ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec log_error(StackTrace, ErrorFormat, Params)
-	-> ok
-	 | {error, Reason}
-	when
+  -> ok
+   | {error, Reason}
+  when
     StackTrace :: term(),
     ErrorFormat :: string(),
     Params :: term(),
     Reason :: term().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 log_error(StackTrace, ErrorFormat, Params) ->
-	try
-		error(log_error)
-	catch
-		error:log_error ->
-			error_logger:error_msg(
-				"\n==================== Debug Logger! ====================\n"
-				"  ERROR: " ++ ErrorFormat ++ "\n  StackTrace: ~p~n",
-				Params ++ [StackTrace])
-	end.
+  try
+    error(log_error)
+  catch
+    error:log_error ->
+      error_logger:error_msg(
+        "\n==================== Debug Logger! ====================\n"
+        "  ERROR: " ++ ErrorFormat ++ "\n  StackTrace: ~p~n",
+        Params ++ [StackTrace])
+  end.
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -78,14 +78,14 @@ log_error(StackTrace, ErrorFormat, Params) ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec error_msg(Params)
-	-> ok
-	 | {error, Reason}
-	when
+  -> ok
+   | {error, Reason}
+  when
     Params :: term(),
     Reason :: term().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 error_msg(Params) ->
-	error_msg("~p", [Params]).
+  error_msg("~p", [Params]).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -94,16 +94,16 @@ error_msg(Params) ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec error_msg(ErrorFormat, Params)
-	-> ok
-	 | {error, Reason}
-	when
+  -> ok
+   | {error, Reason}
+  when
     ErrorFormat :: string(),
     Params :: term(),
     Reason :: term().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 error_msg(ErrorFormat, Params) ->
-	error_logger:error_msg(
-  	"\n==================== Debug Logger! ====================\n"
+  error_logger:error_msg(
+    "\n==================== Debug Logger! ====================\n"
     "  ERROR: " ++ ErrorFormat ++ "~n", Params).
 
 %%-------------------------------------------------------------------------------------------------
@@ -113,14 +113,14 @@ error_msg(ErrorFormat, Params) ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec warning_msg(Params)
-	-> ok 
-	| {error, Reason}
-	when
+  -> ok 
+  | {error, Reason}
+  when
     Params :: term(),
     Reason :: term().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 warning_msg(Params) ->
-	warning_msg("~p", [Params]).
+  warning_msg("~p", [Params]).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -129,17 +129,17 @@ warning_msg(Params) ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec warning_msg(WarningFormat, Params)
-	-> ok
-	 | {error, Reason}
-	when
+  -> ok
+   | {error, Reason}
+  when
     WarningFormat :: string(),
     Params :: term(),
     Reason :: term().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 warning_msg(WarningFormat, Params) ->
-	error_logger:warning_msg(
-		"\n==================== Debug Logger! ====================\n"
-		"  WARNING: " ++ WarningFormat ++ "~n", Params).
+  error_logger:warning_msg(
+    "\n==================== Debug Logger! ====================\n"
+    "  WARNING: " ++ WarningFormat ++ "~n", Params).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -148,14 +148,14 @@ warning_msg(WarningFormat, Params) ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec info_msg(Params)
-	-> ok
-	 | {error, Reason}
-	when
+  -> ok
+   | {error, Reason}
+  when
     Params :: term(),
     Reason :: term().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 info_msg(Params) ->
-	info_msg("~p", [Params]).
+  info_msg("~p", [Params]).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -164,17 +164,17 @@ info_msg(Params) ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec info_msg(MessageFormat, Params)
-	-> ok
-	 | {error, Reason}
-	when
+  -> ok
+   | {error, Reason}
+  when
     MessageFormat :: string(),
     Params :: term(),
     Reason :: term().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 info_msg(MessageFormat, Params) ->
-	io:format(
-		"\n==================== Debug Logger! ====================\n"
-		"  MESSAGE: " ++ MessageFormat ++ "~n", Params).
+  io:format(
+    "\n==================== Debug Logger! ====================\n"
+    "  MESSAGE: " ++ MessageFormat ++ "~n", Params).
 
 
 %%-------------------------------------------------------------------------------------------------
@@ -184,14 +184,14 @@ info_msg(MessageFormat, Params) ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec debug(Params)
-	-> ok
-	 | {error, Reason}
-	when
+  -> ok
+   | {error, Reason}
+  when
     Params :: term(),
     Reason :: term().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 debug(Params) ->
-	debug("~p", [Params]).
+  debug("~p", [Params]).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -200,12 +200,12 @@ debug(Params) ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec debug(MessageFormat, Params)
-	-> ok
-	 | {error, Reason}
-	when
+  -> ok
+   | {error, Reason}
+  when
     MessageFormat :: string(),
     Params :: term(),
     Reason :: term().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 debug(MessageFormat, Params) ->
-	io:format(MessageFormat , Params).
+  io:format(MessageFormat , Params).

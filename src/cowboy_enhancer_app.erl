@@ -51,7 +51,7 @@ start_verbose(VerboseTime) ->
             timer:sleep(500),
             verbose_log(0, "~nSystem ready.~n");
         undefined ->
-            debug_logger:log_error_msg("No target application configured! See 'app.config'.~n"),
+            debug_logger:error_msg("No target application configured! See 'app.config'.~n"),
             timer:sleep(1000),
             application:stop(cowboy_enhancer),
             erlang:exit(exit)

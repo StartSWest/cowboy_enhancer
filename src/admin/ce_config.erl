@@ -15,12 +15,12 @@
 %%=================================================================================================
 -export([
   get_database_manager_config/0,
-	get_session_manager_config/0,
-	set_session_manager_config/1,
-	get_target_app/0,
-	get_templates_dir/0,
-	get_target_app_ebin_and_src_dir/0,
-	get_system_start_verbose_level/0]).
+  get_session_manager_config/0,
+  set_session_manager_config/1,
+  get_target_app/0,
+  get_templates_dir/0,
+  get_target_app_ebin_and_src_dir/0,
+  get_system_start_verbose_level/0]).
 
 %%=================================================================================================
 %% MACRO Definition
@@ -70,13 +70,13 @@
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec get_database_manager_config()
-	-> {ok, Config}
-	 | undefined
-	when
-		Config :: list().
+  -> {ok, Config}
+   | undefined
+  when
+    Config :: list().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 get_database_manager_config() ->
-	application:get_env(?ROOT_CONFIG_NAME, database_manager).
+  application:get_env(?ROOT_CONFIG_NAME, database_manager).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -103,13 +103,13 @@ get_database_manager_config() ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec get_session_manager_config()
-	-> {ok, Config}
-	 | undefined
-	when
-		Config :: list().
+  -> {ok, Config}
+   | undefined
+  when
+    Config :: list().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 get_session_manager_config() ->
-	application:get_env(?ROOT_CONFIG_NAME, session_manager).
+  application:get_env(?ROOT_CONFIG_NAME, session_manager).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -117,31 +117,31 @@ get_session_manager_config() ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec set_session_manager_config(Config)
-	-> ok
-	when
-		Config :: tuple() | list().
+  -> ok
+  when
+    Config :: tuple() | list().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 set_session_manager_config(Config) when is_tuple(Config) ->
-	set_session_manager_config([Config]);
+  set_session_manager_config([Config]);
 
 set_session_manager_config(Config) when is_list(Config) ->
-	% Validates session manager configuration.
-	session_manager:validate_config(Config),
+  % Validates session manager configuration.
+  session_manager:validate_config(Config),
 
-	% gets old config.
-	{ok, OldConfig} = get_session_manager_config(),
-	OldConfigMap = maps:from_list(OldConfig),
+  % gets old config.
+  {ok, OldConfig} = get_session_manager_config(),
+  OldConfigMap = maps:from_list(OldConfig),
 
-	% merges old and new config in a way that new config is kept.
-	ConfigMap = maps:from_list(Config),
-	NewConfig = maps:to_list(maps:merge(OldConfigMap, ConfigMap)),
+  % merges old and new config in a way that new config is kept.
+  ConfigMap = maps:from_list(Config),
+  NewConfig = maps:to_list(maps:merge(OldConfigMap, ConfigMap)),
 
-	% updates config on session_manager gen server.
-	SERVER = session_manager:get_server_name(),
-	ok = gen_server:call(SERVER, {update_config, NewConfig}, infinity),
+  % updates config on session_manager gen server.
+  SERVER = session_manager:get_server_name(),
+  ok = gen_server:call(SERVER, {update_config, NewConfig}, infinity),
 
-	% updates config in the environment.
-	ok = application:set_env(?ROOT_CONFIG_NAME, session_manager, NewConfig).
+  % updates config in the environment.
+  ok = application:set_env(?ROOT_CONFIG_NAME, session_manager, NewConfig).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -162,13 +162,13 @@ set_session_manager_config(Config) when is_list(Config) ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec get_target_app()
-	-> {ok, TargetApp}
-	 | undefined
-	when
-		TargetApp :: atom().
+  -> {ok, TargetApp}
+   | undefined
+  when
+    TargetApp :: atom().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 get_target_app() ->
-	application:get_env(?ROOT_CONFIG_NAME, target_app).
+  application:get_env(?ROOT_CONFIG_NAME, target_app).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -176,13 +176,13 @@ get_target_app() ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec get_templates_dir()
-	-> {ok, TemplatesDir}
-	 | undefined
-	when
-		TemplatesDir :: string().
+  -> {ok, TemplatesDir}
+   | undefined
+  when
+    TemplatesDir :: string().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 get_templates_dir() ->	
-	application:get_env(?ROOT_CONFIG_NAME, templates_dir).
+  application:get_env(?ROOT_CONFIG_NAME, templates_dir).
 
 %%-------------------------------------------------------------------------------------------------
 %% @doc
@@ -190,48 +190,48 @@ get_templates_dir() ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec get_target_app_ebin_and_src_dir()
-	-> {ok, EbinDir, SourceDir}
-	 | {error, could_no_resolve_target_app}
-	when
-		EbinDir :: string(),
-		SourceDir :: string().
+  -> {ok, EbinDir, SourceDir}
+   | {error, could_no_resolve_target_app}
+  when
+    EbinDir :: string(),
+    SourceDir :: string().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 get_target_app_ebin_and_src_dir() ->
-	{ok, TargetApp} = get_target_app(),
+  {ok, TargetApp} = get_target_app(),
 
-	% tries with the current app name.
+  % tries with the current app name.
   R = case (catch (TargetApp:module_info(compile))) of
-		{'EXIT', _} ->
-			% If fail let's try again by adding '_app'.
-			App = list_to_atom(atom_to_list(TargetApp) ++ "_app"),
-			
-			case (catch (App:module_info(compile))) of
-				{'EXIT', _} ->
-					{error, could_no_resolve_target_app};
-				% found target app by adding '_app'.
-				CompileInfo2 ->
-					{ok, CompileInfo2}
-			end;
-			% found target app at first try.
-		CompileInfo3 ->
-			{ok, CompileInfo3}
-	end,
+    {'EXIT', _} ->
+      % If fail let's try again by adding '_app'.
+      App = list_to_atom(atom_to_list(TargetApp) ++ "_app"),
+      
+      case (catch (App:module_info(compile))) of
+        {'EXIT', _} ->
+          {error, could_no_resolve_target_app};
+        % found target app by adding '_app'.
+        CompileInfo2 ->
+          {ok, CompileInfo2}
+      end;
+      % found target app at first try.
+    CompileInfo3 ->
+      {ok, CompileInfo3}
+  end,
 
-	% parses app module info.
-	case R of
-		{ok, CompileInfo} ->
-			% gets source directory.
-			SourceDir = filename:dirname(proplists:get_value(source, CompileInfo, "")),
+  % parses app module info.
+  case R of
+    {ok, CompileInfo} ->
+      % gets source directory.
+      SourceDir = filename:dirname(proplists:get_value(source, CompileInfo, "")),
 
-			% gets ebin directory.
-			Options = proplists:get_value(options, CompileInfo, []),
-			EbinDir = proplists:get_value(outdir, Options, []),
+      % gets ebin directory.
+      Options = proplists:get_value(options, CompileInfo, []),
+      EbinDir = proplists:get_value(outdir, Options, []),
 
-			{ok, EbinDir, SourceDir};
-		Other ->
-			Other
-	end.
-	%%-------------------------------------------------------------------------------------------------
+      {ok, EbinDir, SourceDir};
+    Other ->
+      Other
+  end.
+  %%-------------------------------------------------------------------------------------------------
 %% @doc
 %% Retrieves the initial level of detail of the debug information for the current system.
 %%
@@ -252,10 +252,10 @@ get_target_app_ebin_and_src_dir() ->
 %% @end
 %%-------------------------------------------------------------------------------------------------
 -spec get_system_start_verbose_level()
-	-> Level
-	 | undefined
-	when
-		Level :: number().
+  -> Level
+   | undefined
+  when
+    Level :: number().
 %%/////////////////////////////////////////////////////////////////////////////////////////////////
 get_system_start_verbose_level() ->
-	application:get_env(?ROOT_CONFIG_NAME, system_start_verbose_level, 2).
+  application:get_env(?ROOT_CONFIG_NAME, system_start_verbose_level, 2).

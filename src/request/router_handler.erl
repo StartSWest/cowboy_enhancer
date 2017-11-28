@@ -28,7 +28,7 @@ execute(Req, Env) ->
     %% ********************************************************
     %% NOTE: If in development mode tries to reload the recently
     %% changed files.
-    debug_logger:log_info_msg("*** dev_mode"),
+    debug_logger:info_msg("*** dev_mode"),
     case ce_control:rebuild_all() of
         ok ->
             execute2(Req, Env);
@@ -90,7 +90,7 @@ execute3(HandlerName, ActionName, Req, Env) ->
                 false ->
                     send_error_404(Req);
                 true ->
-                    debug_logger:log_info_msg(Req),
+                    debug_logger:info_msg(Req),
 
                     %% redirects the cowboy_handler to the actual handler
                     %% and action.

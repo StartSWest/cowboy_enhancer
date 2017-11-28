@@ -23,18 +23,18 @@
 <tr><td valign="top"><a href="#log_error-2">log_error/2</a></td><td>
   Logs an error and stack trace.</td></tr>
 <tr><td valign="top"><a href="#log_error-2">log_error/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#log_error_msg-1">log_error_msg/1</a></td><td>
+<tr><td valign="top"><a href="#error_msg-1">error_msg/1</a></td><td>
   Logs an error message without stack trace.</td></tr>
-<tr><td valign="top"><a href="#log_error_msg-2">log_error_msg/2</a></td><td>
+<tr><td valign="top"><a href="#error_msg-2">error_msg/2</a></td><td>
   Logs an error message without stack trace.</td></tr>
-<tr><td valign="top"><a href="#log_error_msg-2">log_error_msg/2</a></td><td></td></tr>
-<tr><td valign="top"><a href="#log_info_msg-1">log_info_msg/1</a></td><td>
+<tr><td valign="top"><a href="#error_msg-2">error_msg/2</a></td><td></td></tr>
+<tr><td valign="top"><a href="#info_msg-1">info_msg/1</a></td><td>
   Logs a info message.</td></tr>
-<tr><td valign="top"><a href="#log_info_msg-2">log_info_msg/2</a></td><td>
+<tr><td valign="top"><a href="#info_msg-2">info_msg/2</a></td><td>
   Logs a info message.</td></tr>
-<tr><td valign="top"><a href="#log_warning_msg-1">log_warning_msg/1</a></td><td>
+<tr><td valign="top"><a href="#warning_msg-1">warning_msg/1</a></td><td>
   Logs a warning message.</td></tr>
-<tr><td valign="top"><a href="#log_warning_msg-2">log_warning_msg/2</a></td><td>
+<tr><td valign="top"><a href="#warning_msg-2">warning_msg/2</a></td><td>
   Logs a warning message.</td></tr>
 </table>
 
@@ -62,56 +62,56 @@
 <p><tt>log_error(ErrorFormat, Params) -&gt; any()</tt></p>
 </div>
 
-<h3 class="function"><a name="log_error_msg-1">log_error_msg/1</a></h3>
+<h3 class="function"><a name="error_msg-1">error_msg/1</a></h3>
 <div class="spec">
-<p><tt>log_error_msg(Params) -&gt; ok | {error, Reason}</tt>
+<p><tt>error_msg(Params) -&gt; ok | {error, Reason}</tt>
 <ul class="definitions"><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
 </div><p>
   Logs an error message without stack trace.
   NOTE: 'Params' is the same as io:format("~p", [Params]).</p>
 
-<h3 class="function"><a name="log_error_msg-2">log_error_msg/2</a></h3>
+<h3 class="function"><a name="error_msg-2">error_msg/2</a></h3>
 <div class="spec">
-<p><tt>log_error_msg(ErrorFormat, Params) -&gt; ok | {error, Reason}</tt>
+<p><tt>error_msg(ErrorFormat, Params) -&gt; ok | {error, Reason}</tt>
 <ul class="definitions"><li><tt>ErrorFormat = string()</tt></li><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
 </div><p>
   Logs an error message without stack trace.
   NOTE: 'ErrorFormat' and 'Params' is the same as:
         io:format(ErrorFormat, [Params]).</p>
 
-<h3 class="function"><a name="log_error_msg-2">log_error_msg/2</a></h3>
+<h3 class="function"><a name="error_msg-2">error_msg/2</a></h3>
 <div class="spec">
-<p><tt>log_error_msg(ErrorFormat, Params) -&gt; any()</tt></p>
+<p><tt>error_msg(ErrorFormat, Params) -&gt; any()</tt></p>
 </div>
 
-<h3 class="function"><a name="log_info_msg-1">log_info_msg/1</a></h3>
+<h3 class="function"><a name="info_msg-1">info_msg/1</a></h3>
 <div class="spec">
-<p><tt>log_info_msg(Params) -&gt; ok | {error, Reason}</tt>
+<p><tt>info_msg(Params) -&gt; ok | {error, Reason}</tt>
 <ul class="definitions"><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
 </div><p>
   Logs a info message.
   NOTE: 'Params' is the same as io:format("~p", [Params]).</p>
 
-<h3 class="function"><a name="log_info_msg-2">log_info_msg/2</a></h3>
+<h3 class="function"><a name="info_msg-2">info_msg/2</a></h3>
 <div class="spec">
-<p><tt>log_info_msg(MessageFormat, Params) -&gt; ok | {error, Reason}</tt>
+<p><tt>info_msg(MessageFormat, Params) -&gt; ok | {error, Reason}</tt>
 <ul class="definitions"><li><tt>MessageFormat = string()</tt></li><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
 </div><p>
   Logs a info message.
   NOTE: 'MessageFormat' and 'Params' is the same as:
         io:format(MessageFormat, [Params]).</p>
 
-<h3 class="function"><a name="log_warning_msg-1">log_warning_msg/1</a></h3>
+<h3 class="function"><a name="warning_msg-1">warning_msg/1</a></h3>
 <div class="spec">
-<p><tt>log_warning_msg(Params) -&gt; ok | {error, Reason}</tt>
+<p><tt>warning_msg(Params) -&gt; ok | {error, Reason}</tt>
 <ul class="definitions"><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
 </div><p>
   Logs a warning message.
   NOTE: 'Params' is the same as io:format("~p", [Params]).</p>
 
-<h3 class="function"><a name="log_warning_msg-2">log_warning_msg/2</a></h3>
+<h3 class="function"><a name="warning_msg-2">warning_msg/2</a></h3>
 <div class="spec">
-<p><tt>log_warning_msg(WarningFormat, Params) -&gt; ok | {error, Reason}</tt>
+<p><tt>warning_msg(WarningFormat, Params) -&gt; ok | {error, Reason}</tt>
 <ul class="definitions"><li><tt>WarningFormat = string()</tt></li><li><tt>Params = term()</tt></li><li><tt>Reason = term()</tt></li></ul></p>
 </div><p>
   Logs a warning message.

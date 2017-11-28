@@ -138,7 +138,7 @@ query(ConRef, Query, Params, Options) ->
 -ifdef(dev_mode).
 log_result(Query, Params, Options, RawResult) ->
     Result = to_result_format(RawResult, Options),
-    debug_logger:log_info_msg(
+    debug_logger:info_msg(
         "~n    Query: ~p"
         "~n    Params:~p"
         "~n    Options:~p"
@@ -150,7 +150,7 @@ log_result(Query, Params, Options, RawResult) ->
 log_result(Query, Params, Options, RawResult) ->
     %% TODO: remove the log later when the dev mode is working.
     Result = to_result_format(RawResult, Options),
-    debug_logger:log_info_msg(
+    debug_logger:info_msg(
         "~n    Query: ~p"
         "~n    Params:~p"
         "~n    Options:~p"
